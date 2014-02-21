@@ -557,6 +557,11 @@ static ulong bootm_disable_interrupts(void)
 	iflag = disable_interrupts();
 #ifdef CONFIG_NETCONSOLE
 	/* Stop the ethernet stack if NetConsole could have left it up */
+        char *s;
+        s = getenv ("stdout");
+        if (strcmp(s, "nc") == 0) {
+               printf("\n\nStarting kernel ...\n");
+        }
 	eth_halt();
 	eth_unregister(eth_get_dev());
 #endif
