@@ -1,0 +1,10 @@
+Current version 2013.10-kirkwood branching off u-boot-2013.10 master
+
+Supports the following Kirkwood devices:
+ 
+dockstar
+goflexhome
+goflexnet
+iconnect
+pogo_e02
+pogo_v4  (work in progress, only supports USB)
