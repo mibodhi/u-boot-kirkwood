@@ -8,3 +8,8 @@ goflexnet
 iconnect
 pogo_e02
 pogo_v4  (work in progress, only supports USB)
+
+--------
+
+Removed EXTRAVERSION from IDENT string in Kirkwood headers
+Added Netgear Stora

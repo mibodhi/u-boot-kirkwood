@@ -15,7 +15,7 @@
 /*
  * Version number information
  */
-#define CONFIG_IDENT_STRING	"-tld-2\nIomega iConnect"
+#define CONFIG_IDENT_STRING	"\nIomega iConnect"
 
 /*
  * High level configuration options

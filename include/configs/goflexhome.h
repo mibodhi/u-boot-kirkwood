@@ -21,7 +21,7 @@
 /*
  * Version number information
  */
-#define CONFIG_IDENT_STRING	"-tld-2\nSeagate GoFlex Home"
+#define CONFIG_IDENT_STRING	"\nSeagate GoFlex Home"
 
 /*
  * High Level Configuration Options (easy to change)

@@ -35,7 +35,7 @@
  */
 #define MACH_TYPE_POGO_V4		2884	/* use openrd ult */
 #define CONFIG_MACH_TYPE		MACH_TYPE_POGO_V4
-#define CONFIG_IDENT_STRING		"\-tld-2\nPogoplug V4"
+#define CONFIG_IDENT_STRING		"\nPogoplug V4"
 
 /*
  * High Level Configuration Options (easy to change)
@@ -57,6 +57,7 @@
 #define CONFIG_CMD_NAND
 #define CONFIG_CMD_PING
 #define CONFIG_CMD_USB
+#define CONFIG_CMD_DATE
 #define CONFIG_CMD_IDE
 #define CONFIG_SYS_LONGHELP
 #define CONFIG_AUTO_COMPLETE

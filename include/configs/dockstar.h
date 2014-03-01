@@ -18,7 +18,7 @@
 /*
  * Version number information
  */
-#define CONFIG_IDENT_STRING	"-tld-2\nSeagate FreeAgent DockStar"
+#define CONFIG_IDENT_STRING	"\nSeagate FreeAgent DockStar"
 
 /*
  * High Level Configuration Options (easy to change)

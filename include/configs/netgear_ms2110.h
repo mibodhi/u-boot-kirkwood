@@ -1,13 +1,10 @@
 /*
- * Copyright (C) 2014 bodhi
- * Based on 
+ * (C) Copyright 2014 bodhi
  *
- * Copyright (C) 2010  Eric C. Cooper <ecc@cmu.edu>
- *
- * Based on sheevaplug.h originally written by
- * Prafulla Wadaskar <prafulla@marvell.com>
+ * Based on Kirkwood support: 
  * (C) Copyright 2009
  * Marvell Semiconductor <www.marvell.com>
+ * Written-by: Prafulla Wadaskar <prafulla@marvell.com>
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -28,27 +25,29 @@
  * MA 02110-1301 USA
  */
 
-#ifndef _CONFIG_GOFLEXNET_H
-#define _CONFIG_GOFLEXNET_H
+#ifndef _CONFIG_NGMS2110_H
+#define _CONFIG_NGMS2110_H
 
 /*
  * Version number information
  */
-#define CONFIG_IDENT_STRING	"\nSeagate GoFlex Net"
+#define CONFIG_IDENT_STRING	"\nNetgear-MS2110"
 
 /*
  * High Level Configuration Options (easy to change)
  */
+#define CONFIG_MARVELL		1
+#define CONFIG_ARM926EJS	1	/* Basic Architecture */
 #define CONFIG_FEROCEON_88FR131	1	/* CPU Core subversion */
 #define CONFIG_KIRKWOOD		1	/* SOC Family Name */
 #define CONFIG_KW88F6281	1	/* SOC Name */
-#define CONFIG_MACH_GOFLEXNET	/* Machine type */
+#define CONFIG_MACH_NETGEAR_MS2110	/* Machine type */
 #define CONFIG_SKIP_LOWLEVEL_INIT	/* disable board lowlevel_init */
 
 /*
  * Commands configuration
  */
-#define CONFIG_SYS_NO_FLASH		/* Declare no flash (NOR/SPI) */
+#define CONFIG_SYS_NO_FLASH             /* Declare no flash (NOR/SPI) */
 #include <config_cmd_default.h>
 #define CONFIG_CMD_DHCP
 #define CONFIG_CMD_ENV
@@ -62,17 +61,32 @@
 #define CONFIG_PREBOOT
 #define CONFIG_SYS_HUSH_PARSER
 #define CONFIG_SYS_PROMPT_HUSH_PS2 "> "
+
+/* #define CONFIG_CMD_AUTOSCRIPT */
+
 /*
  * mv-common.h should be defined after CMD configs since it used them
  * to enable certain macros
  */
 #include "mv-common.h"
 
-#undef CONFIG_SYS_PROMPT	/* previously defined in mv-common.h */
-#define CONFIG_SYS_PROMPT	"GoFlexNet> "	/* Command Prompt */
+/* Remove or override few declarations from mv-common.h */
+#undef CONFIG_SYS_PROMPT        /* previously defined in mv-common.h */
+#define CONFIG_SYS_PROMPT       "Netgear Stora> "
 
 /*
- *  Environment variables configurations
+ * NAND configuration
+ */
+#ifdef CONFIG_CMD_NAND
+#define CONFIG_NAND_KIRKWOOD
+#define CONFIG_SYS_MAX_NAND_DEVICE	1
+#define NAND_MAX_CHIPS			1
+#define CONFIG_SYS_NAND_BASE		0xD8000000	/* KW_DEFADR_NANDF */
+#define NAND_ALLOW_ERASE_ALL		1
+#endif
+
+/*
+ * Environment variables configurations
  */
 #ifdef CONFIG_CMD_NAND
 #define CONFIG_ENV_IS_IN_NAND		1
@@ -91,48 +105,55 @@
 /*
  * Default environment variables
  */
+#define CONFIG_BOOTCOMMAND		"${x_bootcmd_kernel}; "	\
+	"setenv bootargs ${x_bootargs} ${x_bootargs_root}; "	\
+	"${x_bootcmd_usb}; bootm 0x80000;"
 
-#define CONFIG_EXTRA_ENV_SETTINGS \
-  "arcNumber=2097\0" \
-  "mainlineLinux=yes\0" \
-  "console=ttyS0,115200\0" \
-  "usb_init=usb start\0" \
-  "usb_device=0:1\0" \
-  "usb_root=/dev/sda1\0" \
-  "usb_rootfstype=ext2\0" \
-  "usb_rootdelay=10\0"\
-  \
-  "mtdparts=mtdparts=orion_nand:1M(u-boot),4M(uImage),32M(rootfs),-(data)\0"\
-  "mtdids=nand0=orion_nand\0"\
-  "partition=nand0,2\0"\
-  \
-  "bootcmd_pogo=fsload uboot-original-mtd0.kwb; go 0x800200\0" \
-  \
-  /* Zero the first bit at 0x800000 to clear any old image still in RAM after a warm reboot */\
-  "usb_load_uimage=mw 0x800000 0 1; ext2load usb $usb_device 0x800000 /boot/uImage\0"\
-  "usb_boot="\
-    "if ext2load usb $usb_device 0x1100000 /boot/uInitrd; then"\
-    " bootm 0x800000 0x1100000;"\
-    "else"\
-    " bootm 0x800000;"\
-    "fi;\0"\
-  \
-  "set_bootargs_usb=setenv bootargs console=$console root=$usb_root rootdelay=$usb_rootdelay rootfstype=$usb_rootfstype $mtdparts\0" \
-  "bootcmd_usb=run usb_init; run usb_load_uimage; run set_bootargs_usb; run usb_boot;\0" \
-  \
-  "led_init=green blinking\0" \
-  "led_exit=green off\0" \
-  "led_error=orange blinking\0"
+#define CONFIG_MTDPARTS		"orion_nand:1m(uboot),4m@1m(kernel)," \
+	"251m@5m(rootfs) rw\0"
 
+#define CONFIG_EXTRA_ENV_SETTINGS	"x_bootargs=console"	\
+	"=ttyS0,115200 mtdparts="CONFIG_MTDPARTS	\
+	"x_bootcmd_kernel=nand read 0x80000 0x100000 0x400000\0" \
+	"x_bootcmd_usb=usb start\0" \
+	"x_bootargs_root=ubi.mtd=2 root=ubi0:rootfs rootfstype=ubifs\0"
 
-#define CONFIG_BOOTCOMMAND "run bootcmd_usb; usb stop; run bootcmd_pogo; reset"
+/* size in bytes reserved for initial data */
+#define CONFIG_SYS_GBL_DATA_SIZE	128
+
+/*
+ * Other required minimal configurations
+ */
+#define CONFIG_STACKSIZE	0x00100000	/* regular stack- 1M */
+
 /*
  * Ethernet Driver configuration
  */
 #ifdef CONFIG_CMD_NET
+#define CONFIG_NETCONSOLE      /* include NetConsole support */
+#define CONFIG_NET_MULTI       /* specify more that one ports available */
+#define CONFIG_MII             /* expose smi ove miiphy interface */
+#define CONFIG_KIRKWOOD_EGIGA_PORTS    {1,0}   /* enable first port */
+#define CONFIG_MV88E61XX_MULTICHIP_ADRMODE
+#define CONFIG_DIS_AUTO_NEG_SPEED_GMII /*Disable Auto speed negociation */
+#define CONFIG_PHY_SPEED       _1000BASET      /*Force PHYspeed to 1GBPs */
 #define CONFIG_MVGBE_PORTS	{1, 0}	/* enable port 0 only */
-#define CONFIG_PHY_BASE_ADR	0
+#define CONFIG_PHY_BASE_ADR	0x0A
+#define CONFIG_RESET_PHY_R	/* use reset_phy() to init PHY */
 #endif /* CONFIG_CMD_NET */
+
+/*
+ * USB/EHCI
+ */
+#ifdef CONFIG_CMD_USB
+#define CONFIG_USB_EHCI			/* Enable EHCI USB support */
+#define CONFIG_USB_EHCI_KIRKWOOD	/* on Kirkwood platform	*/
+#define CONFIG_EHCI_IS_TDI
+#define CONFIG_USB_STORAGE
+#define CONFIG_DOS_PARTITION
+#define CONFIG_ISO_PARTITION
+#define CONFIG_SUPPORT_VFAT
+#endif /* CONFIG_CMD_USB */
 
 /*
  * File system
@@ -151,9 +172,13 @@
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_LZO
 
+/*
+ * SATA 
+ */
+
 #ifdef CONFIG_MVSATA_IDE
-#define CONFIG_SYS_ATA_IDE0_OFFSET	MV_SATA_PORT0_OFFSET
-#define CONFIG_SYS_ATA_IDE1_OFFSET	MV_SATA_PORT1_OFFSET
+#define CONFIG_SYS_ATA_IDE0_OFFSET      MV_SATA_PORT0_OFFSET
+#define CONFIG_SYS_ATA_IDE1_OFFSET      MV_SATA_PORT1_OFFSET
 #endif
 
 
@@ -167,9 +192,6 @@
  * EFI partition 
  */
 
-#define CONFIG_EFI_PARTITION
-
-
 /*
  *  Date Time
  *   */
@@ -179,4 +201,5 @@
 #define CONFIG_CMD_DNS
 #endif /* CONFIG_CMD_DATE */
 
-#endif /* _CONFIG_GOFLEXNET_H */
+
+#endif /* _CONFIG_NGMS2110_H */
