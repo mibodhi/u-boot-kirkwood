@@ -934,6 +934,14 @@ static int usb_test_unit_ready(ccb *srb, struct us_data *ss)
 {
 	int retries = 10;
 
+	/* increase the retry period if env was defined */
+	unsigned long usb_ready_retry = 0;
+	usb_ready_retry = getenv_ulong("usb_ready_retry", 10, 0);
+	if (usb_ready_retry) {
+		retries *= usb_ready_retry;
+		printf ("\nUse USB retry period from the environment: %d second(s)\n", usb_ready_retry);
+	}
+
 	do {
 		memset(&srb->cmd[0], 0, 12);
 		srb->cmd[0] = SCSI_TST_U_RDY;

@@ -13,3 +13,12 @@ pogo_v4  (work in progress, only supports USB)
 
 Removed EXTRAVERSION from IDENT string in Kirkwood headers
 Added Netgear Stora
+
+--------
+
+Add new U-Boot env: usb_ready_retry
+
+This env allows users to select how long U-Boot will retry in testing the USB drive readiness.
+To enable the feature, set this env either in Linux or U-Boot. 
+The period could be any unsigned integer, so increase the period as needed to a 
+number where you are comfortable that the USB drive is working, and add a few seconds to be sure.
