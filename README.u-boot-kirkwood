@@ -22,3 +22,8 @@ This env allows users to select how long U-Boot will retry in testing the USB dr
 To enable the feature, set this env either in Linux or U-Boot. 
 The period could be any unsigned integer, so increase the period as needed to a 
 number where you are comfortable that the USB drive is working, and add a few seconds to be sure.
+
+--------
+
+Forwarding to 2014.01 U-Boot
+Merge branch '2013.10-kirkwood' into 2014.01-kirkwood
