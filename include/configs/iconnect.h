@@ -1,4 +1,7 @@
 /*
+ * Copyright (C) 2014 bodhi
+ * Based on 
+ *
  * (C) Copyright 2009-2012
  * Wojciech Dubowik <wojciech.dubowik@neratec.com>
  * Luka Perkov <luka@openwrt.org>
@@ -12,7 +15,7 @@
 /*
  * Version number information
  */
-#define CONFIG_IDENT_STRING	" Iomega iConnect"
+#define CONFIG_IDENT_STRING	"\nIomega iConnect"
 
 /*
  * High level configuration options
@@ -45,6 +48,12 @@
 #define CONFIG_CMD_NAND
 #define CONFIG_CMD_PING
 #define CONFIG_CMD_USB
+#define CONFIG_CMD_DATE
+
+#define CONFIG_SYS_LONGHELP
+#define CONFIG_PREBOOT
+#define CONFIG_SYS_HUSH_PARSER
+#define CONFIG_SYS_PROMPT_HUSH_PS2 "> "
 
 /*
  * mv-common.h should be defined after CMD configs since it used them
@@ -53,7 +62,7 @@
 #include "mv-common.h"
 
 #undef CONFIG_SYS_PROMPT
-#define CONFIG_SYS_PROMPT	"iconnect => "
+#define CONFIG_SYS_PROMPT	"iConnect> "
 
 /*
  * Environment variables configuration
@@ -64,8 +73,9 @@
 #else
 #define CONFIG_ENV_IS_NOWHERE
 #endif
-#define CONFIG_ENV_SIZE		0x20000
-#define CONFIG_ENV_OFFSET	0x80000
+#define CONFIG_ENV_SIZE			0x20000	/* 128k */
+#define CONFIG_ENV_ADDR			0xc0000
+#define CONFIG_ENV_OFFSET		0xc0000	/* env starts here */
 
 /*
  * Default environment variables
@@ -103,6 +113,7 @@
  * File system
  */
 #define CONFIG_CMD_EXT2
+#define CONFIG_CMD_EXT4
 #define CONFIG_CMD_FAT
 #define CONFIG_CMD_JFFS2
 #define CONFIG_CMD_UBI
@@ -111,5 +122,26 @@
 #define CONFIG_MTD_DEVICE
 #define CONFIG_MTD_PARTITIONS
 #define CONFIG_CMD_MTDPARTS
+
+/*
+ * Device Tree
+ */
+
+#define CONFIG_OF_LIBFDT
+
+/*
+ * EFI partition
+ */
+
+#define CONFIG_EFI_PARTITION
+
+/*
+ *  Date Time
+ *   */
+#ifdef CONFIG_CMD_DATE
+#define CONFIG_RTC_MV
+#define CONFIG_CMD_SNTP
+#define CONFIG_CMD_DNS
+#endif /* CONFIG_CMD_DATE */
 
 #endif /* _CONFIG_ICONNECT_H */

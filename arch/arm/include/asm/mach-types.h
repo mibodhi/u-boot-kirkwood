@@ -455,6 +455,7 @@ extern unsigned int __machine_arch_type;
 #define MACH_TYPE_SAARB                2727
 #define MACH_TYPE_HARMONY              2731
 #define MACH_TYPE_MSM7X30_FLUID        2741
+#define MACH_TYPE_NETGEAR_MS2110       2743
 #define MACH_TYPE_CM_T3517             2750
 #define MACH_TYPE_WBD222               2753
 #define MACH_TYPE_MSM8X60_SURF         2755
