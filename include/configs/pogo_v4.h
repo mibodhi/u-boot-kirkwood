@@ -10,25 +10,39 @@
  * Marvell Semiconductor <www.marvell.com>
  * Written-by: Prafulla Wadaskar <prafulla@marvell.com>
  *
- * SPDX-License-Identifier:	GPL-2.0+
+ * See file CREDITS for list of people who contributed to this
+ * project.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CONFIG_POGO_E02_H
-#define _CONFIG_POGO_E02_H
+#ifndef _CONFIG_POGO_V4_H
+#define _CONFIG_POGO_V4_H
 
 /*
  * Machine type definition and ID
  */
-#define MACH_TYPE_POGO_E02		3542
-#define CONFIG_MACH_TYPE		MACH_TYPE_POGO_E02
-#define CONFIG_IDENT_STRING	"\nPogo E02"
+#define MACH_TYPE_POGO_V4		2884	/* use openrd ult */
+#define CONFIG_MACH_TYPE		MACH_TYPE_POGO_V4
+#define CONFIG_IDENT_STRING		"\nPogoplug V4"
 
 /*
  * High Level Configuration Options (easy to change)
  */
-#define CONFIG_FEROCEON_88FR131		/* CPU Core subversion */
+#define CONFIG_FEROCEON_88FR131		/* #define CPU Core subversion */
 #define CONFIG_KIRKWOOD			/* SOC Family Name */
-#define CONFIG_KW88F6281		/* SOC Name */
+#define CONFIG_KW88F6192		/* SOC Name */
 #define CONFIG_SKIP_LOWLEVEL_INIT	/* disable board lowlevel_init */
 
 /*
@@ -44,13 +58,14 @@
 #define CONFIG_CMD_PING
 #define CONFIG_CMD_USB
 #define CONFIG_CMD_DATE
-/*
-  Hush parser
- */
+#define CONFIG_CMD_IDE
 #define CONFIG_SYS_LONGHELP
+#define CONFIG_AUTO_COMPLETE
+#define CONFIG_CMDLINE_EDITING
 #define CONFIG_PREBOOT
 #define CONFIG_SYS_HUSH_PARSER
-#define CONFIG_SYS_PROMPT_HUSH_PS2 "> "
+#define CONFIG_SYS_PROMPT_HUSH_PS2 "> "	
+
 /*
  * mv-common.h should be defined after CMD configs since it used them
  * to enable certain macros
@@ -59,7 +74,7 @@
 
 /* Remove or override few declarations from mv-common.h */
 #undef CONFIG_SYS_PROMPT	/* previously defined in mv-common.h */
-#define CONFIG_SYS_PROMPT	"PogoE02> "
+#define CONFIG_SYS_PROMPT	"Pogov4> "
 
 /*
  *  Environment variables configurations
@@ -72,23 +87,25 @@
 #endif
 
 #define CONFIG_ENV_SIZE			0x20000	/* 128k */
-#define CONFIG_ENV_OFFSET		0xC0000	/* env starts here */
+#define CONFIG_ENV_OFFSET		0xc0000	/* env starts here */
 
 /*
  * Default environment variables
  */
 #define CONFIG_BOOTCOMMAND \
 	"setenv bootargs $(bootargs_console); " \
-	"run bootcmd_usb; " \
+	"run bootcmd_mmc; " \
 	"bootm 0x00800000 0x01100000"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"mtdparts=mtdparts=orion_nand:1M(u-boot),4M(uImage)," \
-	"32M(rootfs),-(data)\0"\
+	"mtdparts=mtdparts=orion_nand:2M(u-boot),3M(uImage)," \
+	"3M(uImage2),8M(failsafe),112M(root)\0"\
 	"mtdids=nand0=orion_nand\0"\
 	"bootargs_console=console=ttyS0,115200\0" \
+	"bootcmd_mmc=mmc init; ext2load mmc 0:1 0x00800000 /uImage; " \
+	"ext2load mmc 0:1 0x01100000 /uInitrd\0" \
 	"bootcmd_usb=usb start; ext2load usb 0:1 0x00800000 /uImage; " \
-	"ext2load usb 0:1 0x01100000 /uInitrd\0"
+	"ext2load usb 0:1 0x01100000 /uInitrd\0" 
 
 /*
  * Ethernet Driver configuration
@@ -105,6 +122,8 @@
 #define CONFIG_CMD_EXT4
 #define CONFIG_CMD_FAT
 #define CONFIG_CMD_JFFS2
+#define CONFIG_JFFS2_NAND
+#define CONFIG_JFFS2_LZO
 #define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
 #define CONFIG_RBTREE
@@ -112,6 +131,13 @@
 #define CONFIG_MTD_PARTITIONS
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_LZO
+
+/*
+ * SATA 
+ */
+#ifdef CONFIG_MVSATA_IDE
+#define CONFIG_SYS_ATA_IDE0_OFFSET	MV_SATA_PORT0_OFFSET
+#endif
 
 /*
  * Device Tree
@@ -122,6 +148,7 @@
 /*
  * EFI partition
  */
+
 #define CONFIG_EFI_PARTITION
 
 /*
@@ -133,4 +160,4 @@
 #define CONFIG_CMD_DNS
 #endif /* CONFIG_CMD_DATE */
 
-#endif /* _CONFIG_POGO_E02_H */
+#endif /* _CONFIG_POGO_V4_H */
