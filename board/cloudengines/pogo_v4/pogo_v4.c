@@ -1,4 +1,10 @@
 /*
+ * Copyright (C) 2014 bodhi
+ *
+ * Based on
+ *
+ * Copyright (C) 2014 <ebbes.ebbes@gmail.com>
+ *
  * Copyright (C) 2012
  * David Purdy <david.c.purdy@gmail.com>
  *
@@ -31,6 +37,11 @@
 #include <asm/arch/mpp.h>
 #include <asm/io.h>
 #include "pogo_v4.h"
+
+#ifdef CONFIG_KIRKWOOD_MMC
+#include <kirkwood_mmc.h>
+#endif /* CONFIG_KIRKWOOD_MMC */
+
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -67,11 +78,11 @@ int board_early_init_f(void)
 		MPP17_SD_D3,
 		MPP18_NF_IO0,
 		MPP19_NF_IO1,
-		MPP20_GPIO,
-		MPP21_GPIO,
-		MPP22_GPIO,
+                MPP20_SATA1_ACTn,
+                MPP21_SATA0_ACTn,
+		MPP22_GPIO,	/* Green LED */
 		MPP23_GPIO,
-		MPP24_GPIO,
+		MPP24_GPIO,	/* Red LED */
 		MPP25_GPIO,
 		MPP26_GPIO,
 		MPP27_GPIO,
@@ -86,6 +97,7 @@ int board_early_init_f(void)
 		0
 	};
 	kirkwood_mpp_conf(kwmpp_config, NULL);
+
 	return 0;
 }
 
@@ -130,3 +142,47 @@ void reset_phy(void)
 	debug("88E1116 Initialized on %s\n", name);
 }
 #endif /* CONFIG_RESET_PHY_R */
+
+#ifdef CONFIG_KIRKWOOD_MMC
+int board_mmc_init(bd_t *bis)
+{
+       kw_mmc_initialize(bis);
+       return 0;
+}
+#endif /* CONFIG_KIRKWOOD_MMC */
+
+
+#define GREEN_LED	(1 << 22)
+#define RED_LED		(1 << 24)
+#define BOTH_LEDS	(GREEN_LED | RED_LED)
+#define NEITHER_LED	0
+
+static void set_leds(u32 leds, u32 blinking)
+{
+	struct kwgpio_registers *r;
+	u32 oe;
+	u32 bl;
+
+	r = (struct kwgpio_registers *)KW_GPIO0_BASE;
+	oe = readl(&r->oe) | BOTH_LEDS;
+	writel(oe & ~leds, &r->oe);	/* active low */
+	bl = readl(&r->blink_en) & ~BOTH_LEDS;
+	writel(bl | blinking, &r->blink_en);
+}
+
+void show_boot_progress(int val)
+{
+	switch (val) {
+	case BOOTSTAGE_ID_RUN_OS:		/* booting Linux */
+		set_leds(BOTH_LEDS, NEITHER_LED);
+		break;
+	case BOOTSTAGE_ID_NET_ETH_START:	/* Ethernet initialization */
+		set_leds(GREEN_LED, GREEN_LED);
+		break;
+	default:
+		if (val < 0)	/* error */
+			set_leds(RED_LED, RED_LED);
+		break;
+	}
+}
+

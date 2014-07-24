@@ -27,3 +27,13 @@ number where you are comfortable that the USB drive is working, and add a few se
 
 Forwarding to 2014.01 U-Boot
 Merge branch '2013.10-kirkwood' into 2014.01-kirkwood
+
+--------
+
+Forwarding to 2014.07 U-Boot
+Merge branch '2014.01-kirkwood' into 2014.07-kirkwood
+
+Completed pogo_v4, now supports USB, MMC, SATA
+Add LED boot sequences for boxes that did not have this code
+Add various features missing in some boxes
+Add bootz

@@ -137,4 +137,9 @@
 #define CONFIG_SYS_I2C_SPEED		100000
 #endif
 
+/*
+ * Boot option
+ */
+#define CONFIG_CMD_BOOTZ
+
 #endif /* _KW_CONFIG_H */

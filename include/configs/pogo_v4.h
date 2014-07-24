@@ -54,6 +54,7 @@
 #define CONFIG_CMD_DHCP
 #define CONFIG_CMD_ENV
 #define CONFIG_CMD_MII
+#define CONFIG_CMD_MMC
 #define CONFIG_CMD_NAND
 #define CONFIG_CMD_PING
 #define CONFIG_CMD_USB
@@ -159,5 +160,11 @@
 #define CONFIG_CMD_SNTP
 #define CONFIG_CMD_DNS
 #endif /* CONFIG_CMD_DATE */
+
+/*
+ *
+ */
+
+#define CONFIG_KIRKWOOD_GPIO
 
 #endif /* _CONFIG_POGO_V4_H */

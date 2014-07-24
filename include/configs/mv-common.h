@@ -151,4 +151,14 @@
 #define CONFIG_LZO
 #endif
 
+/*
+ * Kirkwood MMC
+ */
+#if defined(CONFIG_KIRKWOOD) && defined(CONFIG_CMD_MMC)
+#define CONFIG_MMC
+#define CONFIG_GENERIC_MMC 
+#define CONFIG_KIRKWOOD_MMC
+#define CONFIG_SYS_MMC_BASE KW_SDIO_BASE
+#endif /* defined(CONFIG_KIRKWOOD) && defined(CONFIG_MMC) */
+
 #endif /* _MV_COMMON_H */

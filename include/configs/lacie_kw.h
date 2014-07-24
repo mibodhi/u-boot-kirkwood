@@ -1,4 +1,7 @@
 /*
+ * Copyright (C) 2014 bodhi
+ * Based on 
+ *
  * Copyright (C) 2011 Simon Guinot <sguinot@lacie.com>
  *
  * SPDX-License-Identifier:	GPL-2.0+
@@ -29,10 +32,10 @@
 #define CONFIG_IDENT_STRING		" NS Max v2"
 #elif defined(CONFIG_D2NET_V2)
 #define CONFIG_MACH_TYPE		MACH_TYPE_D2NET_V2
-#define CONFIG_IDENT_STRING		" D2 v2"
+#define CONFIG_IDENT_STRING		"LaCie D2 v2"
 #elif defined(CONFIG_NET2BIG_V2)
 #define CONFIG_MACH_TYPE		MACH_TYPE_NET2BIG_V2
-#define CONFIG_IDENT_STRING		" 2Big v2"
+#define CONFIG_IDENT_STRING		"LaCie 2Big v2"
 #else
 #error "Unknown board"
 #endif
@@ -64,6 +67,12 @@
 #ifndef CONFIG_NETSPACE_MINI_V2 /* No USB ports on Network Space v2 Mini */
 #define CONFIG_CMD_USB
 #endif
+
+#define CONFIG_CMD_DATE
+#define CONFIG_SYS_LONGHELP
+#define CONFIG_PREBOOT
+#define CONFIG_SYS_HUSH_PARSER
+#define CONFIG_SYS_PROMPT_HUSH_PS2 "> "
 
 /*
  * Core clock definition
@@ -101,11 +110,11 @@
 #define CONFIG_SYS_IDE_MAXBUS           1
 #define CONFIG_SYS_IDE_MAXDEVICE        1
 #if defined(CONFIG_D2NET_V2)
-#define CONFIG_SYS_PROMPT		"d2v2> "
+#define CONFIG_SYS_PROMPT		"Lacie d2v2> "
 #elif defined(CONFIG_NET2BIG_V2)
-#define CONFIG_SYS_PROMPT		"2big2> "
+#define CONFIG_SYS_PROMPT		"Lacie 2big2> "
 #else
-#define CONFIG_SYS_PROMPT		"ns2> "
+#define CONFIG_SYS_PROMPT		"Lacie ns2> "
 #endif
 
 /*
@@ -161,12 +170,12 @@
  * File systems support
  */
 #define CONFIG_CMD_EXT2
+#define CONFIG_CMD_EXT4
 #define CONFIG_CMD_FAT
-
-/*
- * Use the HUSH parser
- */
-#define CONFIG_SYS_HUSH_PARSER
+#define CONFIG_MTD_DEVICE               /* needed for mtdparts commands */
+#define CONFIG_MTD_PARTITIONS
+#define CONFIG_CMD_MTDPARTS
+#define CONFIG_LZO
 
 /*
  * Console configuration
@@ -178,6 +187,16 @@
  * Enable device tree support
  */
 #define CONFIG_OF_LIBFDT
+
+/*
+ *  Date Time
+ *   
+ */
+#ifdef CONFIG_CMD_DATE
+#define CONFIG_RTC_MV
+#define CONFIG_CMD_SNTP
+#define CONFIG_CMD_DNS
+#endif /* CONFIG_CMD_DATE */
 
 /*
  * Environment variables configurations
