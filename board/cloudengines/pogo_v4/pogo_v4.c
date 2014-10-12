@@ -87,7 +87,7 @@ int board_early_init_f(void)
 		MPP26_GPIO,
 		MPP27_GPIO,
 		MPP28_GPIO,
-		MPP29_TSMP9,	/* USB Power Enable */
+		MPP29_GPIO,	/* Eject button */
 		MPP30_GPIO,
 		MPP31_GPIO,
 		MPP32_GPIO,
