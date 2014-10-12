@@ -33,7 +33,7 @@
 /*
  * Machine type definition and ID
  */
-#define MACH_TYPE_POGO_V4		2884	/* use openrd ult */
+#define MACH_TYPE_POGO_V4		3960
 #define CONFIG_MACH_TYPE		MACH_TYPE_POGO_V4
 #define CONFIG_IDENT_STRING		"\nPogoplug V4"
 
@@ -94,7 +94,7 @@
  * Default environment variables
  */
 #define CONFIG_BOOTCOMMAND \
-	"setenv bootargs $(bootargs_console); " \
+	"setenv bootargs ${bootargs_console}; " \
 	"run bootcmd_mmc; " \
 	"bootm 0x00800000 0x01100000"
 

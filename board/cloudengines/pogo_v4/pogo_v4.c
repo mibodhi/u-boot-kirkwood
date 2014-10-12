@@ -66,8 +66,8 @@ int board_early_init_f(void)
 		MPP5_NF_IO7,
 		MPP6_SYSRST_OUTn,
 		MPP7_GPO,
-		MPP8_UART0_RTS,
-		MPP9_UART0_CTS,
+		MPP8_TW_SDA,
+		MPP9_TW_SCK,
 		MPP10_UART0_TXD,
 		MPP11_UART0_RXD,
 		MPP12_SD_CLK,
@@ -87,7 +87,7 @@ int board_early_init_f(void)
 		MPP26_GPIO,
 		MPP27_GPIO,
 		MPP28_GPIO,
-		MPP29_TSMP9,	/* USB Power Enable */
+		MPP29_GPIO,	/* Eject button */
 		MPP30_GPIO,
 		MPP31_GPIO,
 		MPP32_GPIO,
