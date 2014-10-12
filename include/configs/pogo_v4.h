@@ -94,7 +94,7 @@
  * Default environment variables
  */
 #define CONFIG_BOOTCOMMAND \
-	"setenv bootargs $(bootargs_console); " \
+	"setenv bootargs ${bootargs_console}; " \
 	"run bootcmd_mmc; " \
 	"bootm 0x00800000 0x01100000"
 
