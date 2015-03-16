@@ -149,6 +149,7 @@
 #define CONFIG_MTD_PARTITIONS
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_LZO
+#define CONFIG_CMD_FS_GENERIC
 #endif
 
 /*

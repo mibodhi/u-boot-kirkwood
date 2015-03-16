@@ -142,4 +142,11 @@
  */
 #define CONFIG_CMD_BOOTZ
 
+/*
+ * GPIO
+ */
+#define CONFIG_CMD_GPIO
+#define CONFIG_KIRKWOOD_GPIO
+
+
 #endif /* _KW_CONFIG_H */

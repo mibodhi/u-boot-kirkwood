@@ -87,6 +87,7 @@ int board_early_init_f(void)
 		       GOFLEXHOME_OE_VAL_HIGH,
 		       GOFLEXHOME_OE_LOW, GOFLEXHOME_OE_HIGH);
 	kirkwood_mpp_conf(kwmpp_config, NULL);
+
 	return 0;
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 bodhi
+ * Copyright (C) 2014 bodhi <mibodhi@gmail.com>
  *
  * Based on
  *
@@ -37,6 +37,7 @@
 #include <asm/arch/mpp.h>
 #include <asm/io.h>
 #include "pogo_v4.h"
+#include <asm/arch/gpio.h>
 
 #ifdef CONFIG_KIRKWOOD_MMC
 #include <kirkwood_mmc.h>
@@ -105,6 +106,11 @@ int board_init(void)
 {
 	/* Boot parameters address */
 	gd->bd->bi_boot_params = kw_sdram_bar(0) + 0x100;
+
+        kw_gpio_set_valid(20, 1);
+        kw_gpio_set_valid(21, 1);
+        kw_gpio_set_valid(22, 1);
+        kw_gpio_set_valid(24, 1);
 
 	return 0;
 }

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2014 bodhi
+ * (C) Copyright 2014 bodhi <mibodhi@gmail.com>
  *
  * Based on Kirkwood support: 
  * (C) Copyright 2009
@@ -48,6 +48,7 @@
  * Commands configuration
  */
 #define CONFIG_SYS_NO_FLASH             /* Declare no flash (NOR/SPI) */
+#define CONFIG_SYS_MVFS                 /* Picks up Filesystem from mv-common.h */
 #include <config_cmd_default.h>
 #define CONFIG_CMD_DHCP
 #define CONFIG_CMD_ENV
@@ -105,18 +106,43 @@
 /*
  * Default environment variables
  */
-#define CONFIG_BOOTCOMMAND		"${x_bootcmd_kernel}; "	\
-	"setenv bootargs ${x_bootargs} ${x_bootargs_root}; "	\
-	"${x_bootcmd_usb}; bootm 0x80000;"
+#define CONFIG_BOOTCOMMAND \
+	"run bootcmd_uenv; run bootcmd_usb; reset"
 
-#define CONFIG_MTDPARTS		"orion_nand:1m(uboot),4m@1m(kernel)," \
-	"251m@5m(rootfs) rw\0"
+#define CONFIG_EXTRA_ENV_SETTINGS \
+        "arcNumber=2743\0" \
+        "mtdparts=mtdparts=orion_nand:1m(uboot),4m@1m(kernel)," \
+        "251m@5m(rootfs) rw\0" \
+	"ethaddr=b6:d0:5e:0f:a1:17\0" \
+	"baudrate=115200\0"\
+	"bootcmd_usb=run usb_init; run set_bootargs_usb; run usb_boot;\0"\
+	"bootdelay=10\0"\
+	"console=ttyS0,115200\0"\
+	"device=0:1\0"\
+	"ethact=egiga0\0"\
+	"led_error=orange blinking\0"\
+	"led_exit=green off\0"\
+	"led_init=green blinking\0"\
+	"mainlineLinux=yes\0"\
+	"mtdids=nand0=orion_nand\0"\
+	"partition=nand0,2\0"\
+	"rootdelay=10\0"\
+	"rootfstype=ext2\0"\
+	"set_bootargs_usb=setenv bootargs console=$console root=$usb_root rootdelay=$rootdelay rootfstype=$rootfstype $mtdparts\0"\
+	"stderr=serial\0"\
+	"stdin=serial\0"\
+	"stdout=serial\0"\
+	"usb_boot=mw 0x800000 0 1; run usb_load_uimage; if run usb_load_uinitrd; then bootm 0x800000 0x1100000; else bootm 0x800000; fi\0"\
+	"usb_init=usb start\0"\
+	"usb_load_uimage=ext2load usb $device 0x800000 /boot/uImage\0"\
+	"usb_load_uinitrd=ext2load usb $device 0x1100000 /boot/uInitrd\0"\
+	"usb_root=/dev/sda1\0" \
+	"bootcmd_uenv=run uenv_load; if test $uenv_loaded -eq 1; then run uenv_import; fi\0" \
+	"uenv_import=echo importing envs ...; env import -t 0x810000\0" \
+	"uenv_load=usb start; ide reset; setenv uenv_loaded 0; for devtype in usb ide; do for disknum in 0; do run uenv_read_disk; done; done\0" \
+	"uenv_read=echo loading envs from $devtype $disknum ...; if load $devtype $disknum:1 0x810000 /boot/uEnv.txt; then setenv uenv_loaded 1; fi\0" \
+	"uenv_read_disk=if $devtype part $disknum; then run uenv_read; fi"
 
-#define CONFIG_EXTRA_ENV_SETTINGS	"x_bootargs=console"	\
-	"=ttyS0,115200 mtdparts="CONFIG_MTDPARTS	\
-	"x_bootcmd_kernel=nand read 0x80000 0x100000 0x400000\0" \
-	"x_bootcmd_usb=usb start\0" \
-	"x_bootargs_root=ubi.mtd=2 root=ubi0:rootfs rootfstype=ubifs\0"
 
 /* size in bytes reserved for initial data */
 #define CONFIG_SYS_GBL_DATA_SIZE	128

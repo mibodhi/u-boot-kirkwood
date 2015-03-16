@@ -62,6 +62,7 @@ void __set_blinking(unsigned pin, int blink)
 
 int kw_gpio_is_valid(unsigned pin, int mode)
 {
+
 	if (pin < GPIO_MAX) {
 		if ((mode & GPIO_INPUT_OK) && !test_bit(pin, gpio_valid_input))
 			goto err_out;
@@ -80,14 +81,20 @@ void kw_gpio_set_valid(unsigned pin, int mode)
 {
 	if (mode == 1)
 		mode = GPIO_INPUT_OK | GPIO_OUTPUT_OK;
-	if (mode & GPIO_INPUT_OK)
+
+	if (mode & GPIO_INPUT_OK) {
 		__set_bit(pin, gpio_valid_input);
-	else
+	}
+	else {
 		__clear_bit(pin, gpio_valid_input);
-	if (mode & GPIO_OUTPUT_OK)
+	}
+	if (mode & GPIO_OUTPUT_OK) {
 		__set_bit(pin, gpio_valid_output);
-	else
+	}
+	else {
 		__clear_bit(pin, gpio_valid_output);
+	}
+
 }
 /*
  * GENERIC_GPIO primitives.
@@ -147,4 +154,36 @@ void kw_gpio_set_blink(unsigned pin, int blink)
 
 	/* Set blinking. */
 	__set_blinking(pin, blink);
+}
+
+/*
+ *  Hooks to  GENERIC_GPIO primitives
+ */
+
+int gpio_direction_input(unsigned pin)
+{
+	return kw_gpio_direction_input(pin);
+}
+
+int gpio_direction_output(unsigned pin, int value)
+{
+        return kw_gpio_direction_output(pin, value);
+}
+
+void gpio_set_value(unsigned pin, int value) {
+	kw_gpio_set_value(pin, value);
+}
+
+int gpio_get_value(unsigned pin) {
+	return kw_gpio_get_value(pin);
+}
+
+int gpio_request(unsigned gpio, const char *label)
+{
+	return 0;
+}
+
+int gpio_free(unsigned gpio)
+{
+	return 0;
 }

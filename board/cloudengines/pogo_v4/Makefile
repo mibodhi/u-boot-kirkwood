@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2009 bodhi
+# (C) Copyright 2009 bodhi <mibodhi@gmail.com>
 # 
 # Based on
 # Marvell Semiconductor <www.marvell.com>

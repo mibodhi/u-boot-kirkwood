@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2014 bodhi <mibodhi@gmail.com>
+# (C) Copyright 2015 bodhi <mibodhi@gmail.com>
 #
 # Based on
 # (C) Copyright 2009
@@ -9,4 +9,6 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
-obj-y	:= goflexnet.o
+obj-y	:= nsa320.o
+
+

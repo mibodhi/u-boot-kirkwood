@@ -600,20 +600,20 @@ int do_jffs2_fsinfo(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 /***************************************************/
 U_BOOT_CMD(
 	fsload,	3,	0,	do_jffs2_fsload,
-	"load binary file from a filesystem image",
+	"load binary file from a jffs filesystem image",
 	"[ off ] [ filename ]\n"
 	"    - load binary file from flash bank\n"
 	"      with offset 'off'"
 );
 U_BOOT_CMD(
-	ls,	2,	1,	do_jffs2_ls,
-	"list files in a directory (default /)",
+	fsls,	2,	1,	do_jffs2_ls,
+	"list jffs files in a directory (default /)",
 	"[ directory ]"
 );
 
 U_BOOT_CMD(
 	fsinfo,	1,	1,	do_jffs2_fsinfo,
-	"print information about filesystems",
+	"print information about jffs filesystems",
 	""
 );
 /***************************************************/

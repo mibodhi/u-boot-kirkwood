@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 bodhi
+ * Copyright (C) 2014 bodhi <mibodhi@gmail.com>
  * Based on 
  *
  * Copyright (C) 2011 Simon Guinot <sguinot@lacie.com>

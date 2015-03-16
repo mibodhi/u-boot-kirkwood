@@ -1,5 +1,5 @@
 #
-# (C) Copyright 2014 bodhi
+# (C) Copyright 2014 bodhi <mibodhi@gmail.com>
 #
 # Based on
 # (C) Copyright 2009

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 bodhi
+ * Copyright (C) 2014 bodhi <mibodhi@gmail.com>
  * Based on 
  *
  * (C) Copyright 2009-2012
@@ -81,24 +81,40 @@
  * Default environment variables
  */
 #define CONFIG_BOOTCOMMAND \
-	"setenv bootargs ${console} ${mtdparts} ${bootargs_root}; "	\
-	"ubi part rootfs; "						\
-	"ubifsmount ubi:rootfs; "					\
-	"ubifsload 0x800000 ${kernel}; "				\
-	"bootm 0x800000"
-
-#define CONFIG_MTDPARTS \
-	"mtdparts=orion_nand:"		\
-	"0x80000@0x0(uboot),"		\
-	"0x20000@0x80000(uboot_env),"	\
-	"-@0xa0000(rootfs)\0"
+	"run bootcmd_uenv; run bootcmd_usb; reset"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"console=console=ttyS0,115200\0"	\
-	"mtdids=nand0=orion_nand\0"		\
-	"mtdparts="CONFIG_MTDPARTS		\
-	"kernel=/boot/uImage\0"			\
-	"bootargs_root=noinitrd ubi.mtd=2 root=ubi0:rootfs rootfstype=ubifs\0"
+        "arcNumber=2870\0" \
+        "mtdparts=mtdparts=orion_nand:0x80000@0x0(uboot),0x20000@0x80000(uboot_env),-@0xa0000(rootfs)\0" \
+	"ethaddr=b6:d0:5e:0f:a1:17\0" \
+	"baudrate=115200\0"\
+	"bootcmd_usb=run usb_init; run set_bootargs_usb; run usb_boot;\0"\
+	"bootdelay=10\0"\
+	"console=ttyS0,115200\0"\
+	"device=0:1\0"\
+	"ethact=egiga0\0"\
+	"led_error=orange blinking\0"\
+	"led_exit=green off\0"\
+	"led_init=green blinking\0"\
+	"mainlineLinux=yes\0"\
+	"mtdids=nand0=orion_nand\0"\
+	"partition=nand0,2\0"\
+	"rootdelay=10\0"\
+	"rootfstype=ext2\0"\
+	"set_bootargs_usb=setenv bootargs console=$console root=$usb_root rootdelay=$rootdelay rootfstype=$rootfstype $mtdparts\0"\
+	"stderr=serial\0"\
+	"stdin=serial\0"\
+	"stdout=serial\0"\
+	"usb_boot=mw 0x800000 0 1; run usb_load_uimage; if run usb_load_uinitrd; then bootm 0x800000 0x1100000; else bootm 0x800000; fi\0"\
+	"usb_init=usb start\0"\
+	"usb_load_uimage=ext2load usb $device 0x800000 /boot/uImage\0"\
+	"usb_load_uinitrd=ext2load usb $device 0x1100000 /boot/uInitrd\0"\
+	"usb_root=/dev/sda1\0" \
+	"bootcmd_uenv=run uenv_load; if test $uenv_loaded -eq 1; then run uenv_import; fi\0" \
+	"uenv_import=echo importing envs ...; env import -t 0x810000\0" \
+	"uenv_load=usb start; setenv uenv_loaded 0; for devtype in usb; do for disknum in 0; do run uenv_read_disk; done; done\0" \
+	"uenv_read=echo loading envs from $devtype $disknum ...; if load $devtype $disknum:1 0x810000 /boot/uEnv.txt; then setenv uenv_loaded 1; fi\0" \
+	"uenv_read_disk=if $devtype part $disknum; then run uenv_read; fi"
 
 /*
  * Ethernet driver configuration
