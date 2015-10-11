@@ -70,6 +70,8 @@
 #define MV88E1318_LED2_4	    (1 << 4)
 #define MV88E1318_LED2_5	    (1 << 5)
 
-
+#define BTN_POWER				46
+#define BTN_RESET				36
+#define BTN_COPY				37
 
 #endif /* __NSA325_H */

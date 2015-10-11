@@ -228,3 +228,41 @@ void show_boot_progress(int val)
 	}
 }
 #endif
+
+#if defined(CONFIG_KIRKWOOD_GPIO)
+/* Return GPIO button status */
+/*
+un-pressed:
+ gpio-36 (Reset Button ) in hi (act lo) - IRQ edge (clear )
+ gpio-37 (Copy Button  ) in hi (act lo) - IRQ edge (clear )
+ gpio-46 (Power Button ) in lo (act hi) - IRQ edge (clear )
+pressed
+ gpio-36 (Reset Button ) in lo (act hi) - IRQ edge (clear )
+ gpio-37 (Copy Button  ) in lo (act hi) - IRQ edge (clear )
+ gpio-46 (Power Button ) in hi (act lo) - IRQ edge (clear )
+*/
+
+static int
+do_read_button(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+{
+	if (strcmp(argv[1], "power") == 0) {
+			kw_gpio_set_valid(BTN_POWER, GPIO_INPUT_OK);
+			kw_gpio_direction_input(BTN_POWER);
+			return !kw_gpio_get_value(BTN_POWER);
+	}
+	else if (strcmp(argv[1], "reset") == 0)
+		return kw_gpio_get_value(BTN_RESET);
+	else if (strcmp(argv[1], "copy") == 0)
+		return kw_gpio_get_value(BTN_COPY);
+	else
+		return -1;
+}
+
+
+U_BOOT_CMD(button, 2, 0, do_read_button,
+	   "Return GPIO button status 0=off 1=on",
+	   "- button power|reset|copy: test buttons states\n"
+);
+
+#endif
+
