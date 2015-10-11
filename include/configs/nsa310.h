@@ -1,4 +1,6 @@
-/*
+/* Copyright (C) 2015 bodhi <mibodhi@gmail.com>
+ *
+ * Based on
  * Copyright (C) 2012  Peter Schildmann <linux@schildmann.info>
  *
  * Based on guruplug.h originally written by
@@ -25,33 +27,33 @@
  * MA 02110-1301 USA
  */
 
-#ifndef _CONFIG_NSA320_H
-#define _CONFIG_NSA320_H
+#ifndef _CONFIG_NSA310_H
+#define _CONFIG_NSA310_H
 
 /*
  * Version number information
  */
-#define CONFIG_IDENT_STRING	"\nZyXEL NSA320 2-Bay Power Media Server"
+
+#define CONFIG_IDENT_STRING	"\nZyXEL NSA310 1-Bay Power Media Server \n"
 
 /*
  * High Level Configuration Options (easy to change)
  */
-#define CONFIG_FEROCEON_88FR131	1	/* CPU Core subversion */
-#define CONFIG_KIRKWOOD		1	/* SOC Family Name */
-#define CONFIG_KW88F6281	1	/* SOC Name */
-#define CONFIG_MACH_NSA320		/* Machine type */
-#define CONFIG_MACH_TYPE	MACH_TYPE_NSA320
+#define CONFIG_FEROCEON_88FR131		/* CPU Core subversion */
+#define CONFIG_KIRKWOOD			/* SOC Family Name */
+#define CONFIG_KW88F6281		/* SOC Name */
+#define CONFIG_MACH_NSA310		/* Machine type */
 #define CONFIG_SKIP_LOWLEVEL_INIT	/* disable board lowlevel_init */
 
 /*
  * Misc Configuration Options
  */
-#define CONFIG_SHOW_BOOT_PROGRESS 1	/* boot progess display (LED's) */
+#define CONFIG_SHOW_BOOT_PROGRESS 1     /* boot progess display (LED's) */
 
 /*
  * Commands configuration
  */
-#define CONFIG_SYS_NO_FLASH             /* Declare no flash (NOR/SPI) */
+#define CONFIG_SYS_NO_FLASH		/* Declare no flash (NOR/SPI) */
 #define CONFIG_SYS_MVFS                 /* Picks up Filesystem from mv-common.h */
 #include <config_cmd_default.h>
 #define CONFIG_CMD_DHCP
@@ -66,31 +68,33 @@
 #define CONFIG_PREBOOT
 #define CONFIG_SYS_HUSH_PARSER
 #define CONFIG_SYS_PROMPT_HUSH_PS2 "> "
+	
 /*
  * mv-common.h should be defined after CMD configs since it used them
  * to enable certain macros
  */
 #include "mv-common.h"
 
+/* Remove or override few declarations from mv-common.h */
 #undef CONFIG_SYS_PROMPT	/* previously defined in mv-common.h */
-#define CONFIG_SYS_PROMPT	"NSA320> "	/* Command Prompt */
+#define CONFIG_SYS_PROMPT	"NSA310> "	/* Command Prompt */
 
 /*
- *  Environment variables configurations
+ * Environment variables configurations
  */
 #ifdef CONFIG_CMD_NAND
-#define CONFIG_ENV_IS_IN_NAND		1
-#define CONFIG_ENV_SECT_SIZE		0x20000		/* 128K */
+#define CONFIG_ENV_IS_IN_NAND           1
+#define CONFIG_ENV_SECT_SIZE            0x20000         /* 128K */
 #else
-#define CONFIG_ENV_IS_NOWHERE		1		/* if env in SDRAM */
+#define CONFIG_ENV_IS_NOWHERE           1               /* if env in SDRAM */
 #endif
-/*
- * max 4k env size is enough, but in case of nand
+
+/* max 4k env size is enough, but in case of nand
  * it has to be rounded to sector size
  */
-#define CONFIG_ENV_SIZE			0x20000		/* 128k */
-#define CONFIG_ENV_ADDR			0xc0000
-#define CONFIG_ENV_OFFSET		0xc0000	/* env starts here */
+#define CONFIG_ENV_SIZE                 0x20000         /* 128k */
+#define CONFIG_ENV_ADDR                 0xc0000
+#define CONFIG_ENV_OFFSET               0xc0000 /* env starts here */
 
 /*
  * Default environment variables
@@ -100,7 +104,7 @@
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"console=console=ttyS0,115200\0" \
-	"arcNumber=3956\0" \
+	"arcNumber=4022\0" \
 	"baudrate=115200\0" \
 	"bootcmd_sata=run sata_init; run set_bootargs_sata; run sata_boot\0" \
 	"bootcmd_usb=run usb_init; run set_bootargs_usb; run usb_boot\0" \
@@ -145,10 +149,12 @@
  * Ethernet Driver configuration
  */
 #ifdef CONFIG_CMD_NET
+#define CONFIG_NETCONSOLE
+#define CONFIG_NET_MULTI	
 #define CONFIG_MVGBE_PORTS		{1, 0}	/* enable port 0 only */
 #define CONFIG_PHY_BASE_ADR		0x1
 #define CONFIG_PHY_GIGE
-#define CONFIG_NETCONSOLE
+#define CONFIG_RESET_PHY_R
 #endif /* CONFIG_CMD_NET */
 
 /*
@@ -195,4 +201,4 @@
 #define CONFIG_CMD_DNS
 #endif /* CONFIG_CMD_DATE */
 
-#endif /* _CONFIG_NSA320_H */
+#endif /* _CONFIG_NSA310_H */

@@ -119,7 +119,7 @@
 	"machid=118f\0" \
 	"mainlineLinux=yes\0" \
 	"mtdids=nand0=orion_nand\0" \
-	"mtdparts=mtdparts=nand_mtd:0x100000(uboot),0x80000(stock_uboot_env),0x80000(key_store)," \
+	"mtdparts=mtdparts=orion_nand:0x100000(uboot),0x80000(stock_uboot_env),0x80000(key_store)," \
 	"0x80000(info),0xA00000(etc),0xA00000(kernel_1),0x2FC0000(rootfs1),0xA00000(kernel_2),0x2FC0000(rootfs2)\0"\
 	"partition=nand0,2\0" \
 	"rootdelay=10\0" \

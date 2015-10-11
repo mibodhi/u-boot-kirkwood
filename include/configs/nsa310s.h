@@ -1,4 +1,7 @@
 /*
+ * Copyright (C) 2015 bodhi <mibodhi@gmail.com>
+ *
+ * Based on 
  * Copyright (C) 2012  Peter Schildmann <linux@schildmann.info>
  *
  * Based on guruplug.h originally written by
@@ -25,22 +28,23 @@
  * MA 02110-1301 USA
  */
 
-#ifndef _CONFIG_NSA320_H
-#define _CONFIG_NSA320_H
+#ifndef _CONFIG_NSA310S_H
+#define _CONFIG_NSA310S_H
 
 /*
  * Version number information
  */
-#define CONFIG_IDENT_STRING	"\nZyXEL NSA320 2-Bay Power Media Server"
+#define CONFIG_IDENT_STRING	"\nZyXEL NSA310S/320S 1/2-Bay Power Media Server"
 
 /*
  * High Level Configuration Options (easy to change)
  */
 #define CONFIG_FEROCEON_88FR131	1	/* CPU Core subversion */
 #define CONFIG_KIRKWOOD		1	/* SOC Family Name */
-#define CONFIG_KW88F6281	1	/* SOC Name */
-#define CONFIG_MACH_NSA320		/* Machine type */
-#define CONFIG_MACH_TYPE	MACH_TYPE_NSA320
+#define CONFIG_KW88F6192        1       /* Compatible SOC Name */
+#define CONFIG_KW88F6702        1       /* SOC Name */
+#define CONFIG_MACH_NSA310S		/* Machine type */
+#define CONFIG_MACH_TYPE	MACH_TYPE_NSA310S
 #define CONFIG_SKIP_LOWLEVEL_INIT	/* disable board lowlevel_init */
 
 /*
@@ -66,6 +70,7 @@
 #define CONFIG_PREBOOT
 #define CONFIG_SYS_HUSH_PARSER
 #define CONFIG_SYS_PROMPT_HUSH_PS2 "> "
+
 /*
  * mv-common.h should be defined after CMD configs since it used them
  * to enable certain macros
@@ -73,7 +78,7 @@
 #include "mv-common.h"
 
 #undef CONFIG_SYS_PROMPT	/* previously defined in mv-common.h */
-#define CONFIG_SYS_PROMPT	"NSA320> "	/* Command Prompt */
+#define CONFIG_SYS_PROMPT	"NSA3x0S> "	/* Command Prompt */
 
 /*
  *  Environment variables configurations
@@ -100,7 +105,7 @@
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"console=console=ttyS0,115200\0" \
-	"arcNumber=3956\0" \
+	"arcNumber=4931\0" \
 	"baudrate=115200\0" \
 	"bootcmd_sata=run sata_init; run set_bootargs_sata; run sata_boot\0" \
 	"bootcmd_usb=run usb_init; run set_bootargs_usb; run usb_boot\0" \
@@ -195,4 +200,4 @@
 #define CONFIG_CMD_DNS
 #endif /* CONFIG_CMD_DATE */
 
-#endif /* _CONFIG_NSA320_H */
+#endif /* _CONFIG_NSA310S_H */

@@ -1,13 +1,10 @@
 /*
- * Copyright (C) 2015  bodhi <mibodhi@gmail.com>
- *
- * Based on nsa320.c originall written by
- * Copyright (C) 2012  Peter Schildmann <linux@schildmann.info>
- *
- * Based on guruplug.c originally written by
- * Siddarth Gore <gores@marvell.com>
- * (C) Copyright 2009
+ * Copyright (C) 2013 Rafal Kazmierowski
+ * 
+ * Based on NSA320.c Peter Schildmann <linux@schildmann.info> 
+ * originally written by
  * Marvell Semiconductor <www.marvell.com>
+ * Written-by: Prafulla Wadaskar <prafulla@marvell.com>
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -30,12 +27,11 @@
 
 #include <common.h>
 #include <miiphy.h>
+#include <asm/arch/cpu.h>
 #include <asm/arch/kirkwood.h>
 #include <asm/arch/mpp.h>
-#include <asm/arch/cpu.h>
-#include <asm/gpio.h>
-#include <asm/io.h>
-#include "nsa320.h"
+#include <asm/io.h>  
+#include "nsa310.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -46,12 +42,12 @@ int board_early_init_f(void)
 	 * There are maximum 64 gpios controlled through 2 sets of registers
 	 * the below configuration configures mainly initial LED status
 	 */
-	kw_config_gpio(NSA320_VAL_LOW, NSA320_VAL_HIGH,
-		       NSA320_OE_LOW, NSA320_OE_HIGH);
+	kw_config_gpio(NSA310_VAL_LOW, NSA310_VAL_HIGH,
+		       NSA310_OE_LOW, NSA310_OE_HIGH);
 
 	/* Multi-Purpose Pins Functionality configuration */
 	/* (all LEDs & power off active high) */
-	u32 kwmpp_config[] = {
+	static const u32 kwmpp_config[] = {
 		MPP0_NF_IO2,
 		MPP1_NF_IO3,
 		MPP2_NF_IO4,
@@ -60,51 +56,51 @@ int board_early_init_f(void)
 		MPP5_NF_IO7,
 		MPP6_SYSRST_OUTn,
 		MPP7_GPO,
-		MPP8_TW_SDA,		/* PCF8563 RTC chip   */
-		MPP9_TW_SCK,		/* connected to TWSI  */
+		MPP8_TW_SDA,	/* PCF8563 RTC chip   */
+		MPP9_TW_SCK,	/* connected to TWSI  */
 		MPP10_UART0_TXD,
 		MPP11_UART0_RXD,
-		MPP12_GPO,		/* HDD2 LED (green)   */
-		MPP13_GPIO,		/* HDD2 LED (red)     */
+		MPP12_GPO,		/* SATA2 LED (green)  */       
+		MPP13_GPIO,		/* SATA2 LED (red)    */      
 		MPP14_GPIO,		/* MCU DATA pin (in)  */
-		MPP15_GPIO,		/* USB LED (green)    */
+		MPP15_GPIO,		/* USB LED (green)    */ 
 		MPP16_GPIO,		/* MCU CLK pin (out)  */
 		MPP17_GPIO,		/* MCU ACT pin (out)  */
 		MPP18_NF_IO0,
 		MPP19_NF_IO1,
 		MPP20_GPIO,
-		MPP21_GPIO,		/* USB power          */
+		MPP21_GPIO,		/* USB LED (red)-Power*/
 		MPP22_GPIO,
 		MPP23_GPIO,
 		MPP24_GPIO,
 		MPP25_GPIO,
 		MPP26_GPIO,
 		MPP27_GPIO,
-		MPP28_GPIO,		/* SYS LED (green)    */
-		MPP29_GPIO,		/* SYS LED (orange)   */
+		MPP28_GPIO,		/* SYS LED (green)    */       
+		MPP29_GPIO,		/* SYS LED (red)      */       
 		MPP30_GPIO,
 		MPP31_GPIO,
 		MPP32_GPIO,
 		MPP33_GPIO,
 		MPP34_GPIO,
 		MPP35_GPIO,
-		MPP36_GPIO,		/* reset button       */
-		MPP37_GPIO,		/* copy button        */
+		MPP36_GPIO,		/* Reset button       */       
+		MPP37_GPIO,		/* Copy button        */       
 		MPP38_GPIO,		/* VID B0             */
-		MPP39_GPIO,		/* COPY LED (green)   */
-		MPP40_GPIO,		/* COPY LED (red)     */
-		MPP41_GPIO,		/* HDD1 LED (green)   */
-		MPP42_GPIO,		/* HDD1 LED (red)     */
+		MPP39_GPIO,		/* COPY LED (green)   */       
+		MPP40_GPIO,		/* COPY LED (red)     */  
+		MPP41_GPIO,		/* SATA1 LED (green)  */     
+		MPP42_GPIO,		/* SATA1 LED (red)    */      
 		MPP43_GPIO,		/* HTP pin            */
-		MPP44_GPIO,		/* buzzer             */
+		MPP44_GPIO,		/* Buzzer             */
 		MPP45_GPIO,		/* VID B1             */
-		MPP46_GPIO,		/* power button       */
-		MPP47_GPIO,		/* power resume data  */
-		MPP48_GPIO,		/* power off          */
-		MPP49_GPIO,		/* power resume clock */
+		MPP46_GPIO,		/* Power button       */       
+		MPP47_GPIO,		/* Power resume data  */
+		MPP48_GPIO,		/* Power off          */
+		MPP49_GPIO,		/* Power resume clock */
 		0
 	};
-	kirkwood_mpp_conf(kwmpp_config, NULL);
+	kirkwood_mpp_conf(kwmpp_config,NULL);
 	return 0;
 }
 
@@ -113,7 +109,7 @@ int board_init(void)
 	/*
 	 * arch number of board
 	 */
-	gd->bd->bi_arch_number = MACH_TYPE_NSA320;
+	gd->bd->bi_arch_number = MACH_TYPE_NSA310;
 
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = kw_sdram_bar(0) + 0x100;
@@ -149,29 +145,6 @@ void reset_phy(void)
 	/* reset the phy */
 	miiphy_reset(name, devadr);
 
-	/* The ZyXEL NSA320 uses the 88E1310 Alaska  */
-	/* and has an MCU attached to the LED[2] via tristate interrupt */
-	reg = 0;
-
-	/* switch to LED register page */
-	miiphy_write(name, devadr, MV88E1318_PGADR_REG, MV88E1318_LED_PG);
-	/* read out LED polarity register */
-	miiphy_read(name, devadr, MV88E1318_LED_POL_REG, &reg);
-	/* clear 4, set 5 - LED2 low, tri-state */
-	reg &= ~(MV88E1318_LED2_4);
-	reg |= (MV88E1318_LED2_5);
-	/* write back LED polarity register */
-	miiphy_write(name, devadr, MV88E1318_LED_POL_REG, reg);
-	/* jump back to page 0, per the PHY chip documenation. */
-	miiphy_write(name, devadr, MV88E1318_PGADR_REG, 0);
-
-	/* Set the phy back to auto-negotiation mode */
-	miiphy_write(name, devadr, 0x4, 0x1e1);
-	miiphy_write(name, devadr, 0x9, 0x300);
-	/* Downshift */
-	miiphy_write(name, devadr, 0x10, 0x3860);
-	miiphy_write(name, devadr, 0x0, 0x9140);
-
 	printf("MV88E1318 PHY initialized on %s\n", name);
 }
 #endif /* CONFIG_RESET_PHY_R */
@@ -189,11 +162,11 @@ void show_boot_progress(int val)
 
 	switch (val) {
 	case BOOTSTAGE_ID_DECOMP_IMAGE:
-		writel(blen0 & ~(SYS_GREEN_LED | SYS_ORANGE_LED), &gpio0->blink_en);
-		writel((dout0 & ~SYS_GREEN_LED) | SYS_ORANGE_LED, &gpio0->dout);
+		writel(blen0 & ~(SYS_GREEN_LED | SYS_RED_LED), &gpio0->blink_en);
+		writel((dout0 & ~SYS_GREEN_LED) | SYS_RED_LED, &gpio0->dout);
 		break;
 	case BOOTSTAGE_ID_RUN_OS:
-		writel(dout0 & ~SYS_ORANGE_LED, &gpio0->dout);
+		writel(dout0 & ~SYS_RED_LED, &gpio0->dout);
 		writel(blen0 | SYS_GREEN_LED, &gpio0->blink_en);
 		break;
 	case BOOTSTAGE_ID_NET_START:
@@ -214,7 +187,7 @@ void show_boot_progress(int val)
 			/* error */
 			printf("Error occured, error code = %d\n", -val);
 			writel(dout0 & ~SYS_GREEN_LED, &gpio0->dout);
-			writel(blen0 | SYS_ORANGE_LED, &gpio0->blink_en);
+			writel(blen0 | SYS_RED_LED, &gpio0->blink_en);
 		}
 		break;
 	}

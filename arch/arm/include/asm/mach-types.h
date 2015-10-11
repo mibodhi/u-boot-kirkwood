@@ -1110,6 +1110,7 @@ extern unsigned int __machine_arch_type;
 #define MACH_TYPE_NSA310               4022
 #define MACH_TYPE_KZM9G                4140
 #define MACH_TYPE_NSA325               4495
+#define MACH_TYPE_NSA310S              4931
 
 #ifdef CONFIG_ARCH_EBSA110
 # ifdef machine_arch_type
@@ -14273,6 +14274,18 @@ extern unsigned int __machine_arch_type;
 # define machine_is_nsa325()	(machine_arch_type == MACH_TYPE_NSA325)
 #else
 # define machine_is_nsa325()	(0)
+#endif
+
+#ifdef CONFIG_MACH_NSA310S
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type     __machine_arch_type
+# else
+#  define machine_arch_type     MACH_TYPE_NSA310S
+# endif
+# define machine_is_nsa310s()  (machine_arch_type == MACH_TYPE_NSA310S)
+#else
+# define machine_is_nsa310s()  (0)
 #endif
 
 /*

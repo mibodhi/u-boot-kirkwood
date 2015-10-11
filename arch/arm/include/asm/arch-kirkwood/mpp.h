@@ -217,6 +217,7 @@
 #define MPP33_GPIO		MPP( 33, 0x0, 1, 1, 0,   1,   1,   1    )
 #define MPP33_TDM_DTX		MPP( 33, 0x2, 0, 1, 0,   0,   1,   1    )
 #define MPP33_GE1_13		MPP( 33, 0x3, 0, 0, 0,   1,   1,   1    )
+#define MPP33_SATA1_ACTn        MPP( 33, 0x5, 0, 1, 0,   1,   1,   1    )
 
 #define MPP34_GPIO		MPP( 34, 0x0, 1, 1, 0,   1,   1,   1    )
 #define MPP34_TDM_SPI_CS1	MPP( 34, 0x2, 0, 1, 0,   0,   1,   1    )

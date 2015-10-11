@@ -162,4 +162,9 @@
 #define CONFIG_SYS_MMC_BASE KW_SDIO_BASE
 #endif /* defined(CONFIG_KIRKWOOD) && defined(CONFIG_MMC) */
 
+/*
+ * GPIO command for all Kirkwood boxes
+ */
+#define CONFIG_CMD_GPIO
+
 #endif /* _MV_COMMON_H */

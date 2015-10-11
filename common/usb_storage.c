@@ -939,7 +939,7 @@ static int usb_test_unit_ready(ccb *srb, struct us_data *ss)
 	usb_ready_retry = getenv_ulong("usb_ready_retry", 10, 0);
 	if (usb_ready_retry) {
 		retries *= usb_ready_retry;
-		printf ("\nUse USB retry period from the environment: %d second(s)\n", usb_ready_retry);
+		printf ("\nUse USB retry period from the environment: %ld second(s)\n", usb_ready_retry);
 	}
 
 	do {

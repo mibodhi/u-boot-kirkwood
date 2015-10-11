@@ -1,4 +1,7 @@
 /*
+ * Copyright (C) 2015 bodhi <mibodhi@gmail.com>
+ *
+ * Based on
  * Copyright (C) 2014  Jason Plum <jplum@archlinuxarm.org>
  *
  * Based on nsa320.c originall written by
@@ -149,24 +152,32 @@ void reset_phy(void)
 	reg |= (MV88E1318_RGMII_RXTM_CTRL | MV88E1318_RGMII_TXTM_CTRL);
 	miiphy_write(name, devadr, MV88E1318_MAC_CTRL_REG, reg);
 	miiphy_write(name, devadr, MV88E1318_PGADR_REG, 0);
-    
-    /* reset the phy */
+
+	/* reset the phy */
 	miiphy_reset(name, devadr);
 
-    /* The ZyXEL NSA325 uses the 88E1310S Alaska (interface identical to 88E1318) */
-    /* and has an MCU attached to the LED[2] via tristate interrupt */
-    reg = 0;
-    /* switch to LED register page */
-    miiphy_write(name, devadr, MV88E1318_PGADR_REG, MV88E1318_LED_PG);
-    /* read out LED polarity register */
-    miiphy_read(name, devadr, MV88E1318_LED_POL_REG, &reg);
-    /* clear 4, set 5 - LED2 low, tri-state */
-    reg &= ~(MV88E1318_LED2_4);
-    reg |= (MV88E1318_LED2_5);
-    /* write back LED polarity register */
-    miiphy_write(name, devadr, MV88E1318_LED_POL_REG, reg);
-    /* jump back to page 0, per the PHY chip documenation. */
-    miiphy_write(name, devadr, MV88E1318_PGADR_REG, 0);
+	/* The ZyXEL NSA325 uses the 88E1310S Alaska (interface identical to 88E1318) */
+	/* and has an MCU attached to the LED[2] via tristate interrupt */
+	reg = 0;
+
+	/* switch to LED register page */
+	miiphy_write(name, devadr, MV88E1318_PGADR_REG, MV88E1318_LED_PG);
+	/* read out LED polarity register */
+	miiphy_read(name, devadr, MV88E1318_LED_POL_REG, &reg);
+	/* clear 4, set 5 - LED2 low, tri-state */
+	reg &= ~(MV88E1318_LED2_4);
+	reg |= (MV88E1318_LED2_5);
+	/* write back LED polarity register */
+	miiphy_write(name, devadr, MV88E1318_LED_POL_REG, reg);
+	/* jump back to page 0, per the PHY chip documenation. */
+	miiphy_write(name, devadr, MV88E1318_PGADR_REG, 0);
+
+	/* Set the phy back to auto-negotiation mode */
+	miiphy_write(name, devadr, 0x4, 0x1e1);
+	miiphy_write(name, devadr, 0x9, 0x300);
+	/* Downshift */
+	miiphy_write(name, devadr, 0x10, 0x3860);
+	miiphy_write(name, devadr, 0x0, 0x9140);
 
 	printf("MV88E1318 PHY initialized on %s\n", name);
 

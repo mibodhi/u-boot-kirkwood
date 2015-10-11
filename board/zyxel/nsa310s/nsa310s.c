@@ -35,7 +35,8 @@
 #include <asm/arch/cpu.h>
 #include <asm/gpio.h>
 #include <asm/io.h>
-#include "nsa320.h"
+#include "nsa310s.h"
+#include <asm/arch/gpio.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -46,8 +47,9 @@ int board_early_init_f(void)
 	 * There are maximum 64 gpios controlled through 2 sets of registers
 	 * the below configuration configures mainly initial LED status
 	 */
-	kw_config_gpio(NSA320_VAL_LOW, NSA320_VAL_HIGH,
-		       NSA320_OE_LOW, NSA320_OE_HIGH);
+
+	kw_config_gpio(NSA310S_VAL_LOW, NSA310S_VAL_HIGH,
+		       NSA310S_OE_LOW, NSA310S_OE_HIGH);
 
 	/* Multi-Purpose Pins Functionality configuration */
 	/* (all LEDs & power off active high) */
@@ -60,48 +62,34 @@ int board_early_init_f(void)
 		MPP5_NF_IO7,
 		MPP6_SYSRST_OUTn,
 		MPP7_GPO,
-		MPP8_TW_SDA,		/* PCF8563 RTC chip   */
-		MPP9_TW_SCK,		/* connected to TWSI  */
+		MPP8_TW_SDA,
+		MPP9_TW_SCK,
 		MPP10_UART0_TXD,
 		MPP11_UART0_RXD,
-		MPP12_GPO,		/* HDD2 LED (green)   */
-		MPP13_GPIO,		/* HDD2 LED (red)     */
-		MPP14_GPIO,		/* MCU DATA pin (in)  */
-		MPP15_GPIO,		/* USB LED (green)    */
-		MPP16_GPIO,		/* MCU CLK pin (out)  */
-		MPP17_GPIO,		/* MCU ACT pin (out)  */
+		MPP12_GPO,
+		MPP13_GPIO,
+		MPP14_GPIO,
+		MPP15_GPIO,
+		MPP16_GPIO,
+		MPP17_GPIO,
 		MPP18_NF_IO0,
 		MPP19_NF_IO1,
 		MPP20_GPIO,
-		MPP21_GPIO,		/* USB power          */
+		MPP21_GPIO,
 		MPP22_GPIO,
 		MPP23_GPIO,
 		MPP24_GPIO,
 		MPP25_GPIO,
 		MPP26_GPIO,
 		MPP27_GPIO,
-		MPP28_GPIO,		/* SYS LED (green)    */
-		MPP29_GPIO,		/* SYS LED (orange)   */
+		MPP28_GPIO,
+		MPP29_GPIO,
 		MPP30_GPIO,
 		MPP31_GPIO,
 		MPP32_GPIO,
-		MPP33_GPIO,
+		MPP33_SATA1_ACTn,
 		MPP34_GPIO,
 		MPP35_GPIO,
-		MPP36_GPIO,		/* reset button       */
-		MPP37_GPIO,		/* copy button        */
-		MPP38_GPIO,		/* VID B0             */
-		MPP39_GPIO,		/* COPY LED (green)   */
-		MPP40_GPIO,		/* COPY LED (red)     */
-		MPP41_GPIO,		/* HDD1 LED (green)   */
-		MPP42_GPIO,		/* HDD1 LED (red)     */
-		MPP43_GPIO,		/* HTP pin            */
-		MPP44_GPIO,		/* buzzer             */
-		MPP45_GPIO,		/* VID B1             */
-		MPP46_GPIO,		/* power button       */
-		MPP47_GPIO,		/* power resume data  */
-		MPP48_GPIO,		/* power off          */
-		MPP49_GPIO,		/* power resume clock */
 		0
 	};
 	kirkwood_mpp_conf(kwmpp_config, NULL);
@@ -113,7 +101,7 @@ int board_init(void)
 	/*
 	 * arch number of board
 	 */
-	gd->bd->bi_arch_number = MACH_TYPE_NSA320;
+	gd->bd->bi_arch_number = MACH_TYPE_NSA310S;
 
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = kw_sdram_bar(0) + 0x100;
@@ -140,19 +128,18 @@ void reset_phy(void)
 	}
 
 	/* Set RGMII delay */
-	miiphy_write(name, devadr, MV88E1318_PGADR_REG, 2);
+	miiphy_write(name, devadr, MV88E1318_PGADR_REG, MV88E1318_MAC_CTRL_PG);
 	miiphy_read(name, devadr, MV88E1318_MAC_CTRL_REG, &reg);
 	reg |= (MV88E1318_RGMII_RXTM_CTRL | MV88E1318_RGMII_TXTM_CTRL);
 	miiphy_write(name, devadr, MV88E1318_MAC_CTRL_REG, reg);
 	miiphy_write(name, devadr, MV88E1318_PGADR_REG, 0);
-
-	/* reset the phy */
+    
+    /* reset the phy */
 	miiphy_reset(name, devadr);
 
-	/* The ZyXEL NSA320 uses the 88E1310 Alaska  */
+	/* The ZyXEL NSA310S uses the 88E1310S Alaska (interface identical to 88E1318) */
 	/* and has an MCU attached to the LED[2] via tristate interrupt */
 	reg = 0;
-
 	/* switch to LED register page */
 	miiphy_write(name, devadr, MV88E1318_PGADR_REG, MV88E1318_LED_PG);
 	/* read out LED polarity register */
@@ -165,16 +152,18 @@ void reset_phy(void)
 	/* jump back to page 0, per the PHY chip documenation. */
 	miiphy_write(name, devadr, MV88E1318_PGADR_REG, 0);
 
-	/* Set the phy back to auto-negotiation mode */
-	miiphy_write(name, devadr, 0x4, 0x1e1);
-	miiphy_write(name, devadr, 0x9, 0x300);
-	/* Downshift */
-	miiphy_write(name, devadr, 0x10, 0x3860);
-	miiphy_write(name, devadr, 0x0, 0x9140);
+        /* Set the phy back to auto-negotiation mode */
+        miiphy_write(name, devadr, 0x4, 0x1e1);
+        miiphy_write(name, devadr, 0x9, 0x300);
+        /* Downshift */
+        miiphy_write(name, devadr, 0x10, 0x3860);
+        miiphy_write(name, devadr, 0x0, 0x9140);
 
 	printf("MV88E1318 PHY initialized on %s\n", name);
+
 }
 #endif /* CONFIG_RESET_PHY_R */
+
 
 #ifdef CONFIG_SHOW_BOOT_PROGRESS
 void show_boot_progress(int val)
