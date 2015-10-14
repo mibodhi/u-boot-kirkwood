@@ -1,4 +1,12 @@
+For latest u-boot images:
+http://forum.doozan.com/read.php?3,12381
+
+===== Source Code updates listed below in chronological order =====
+===================================================================
+
 Current version branch 2013.10-kirkwood (branching off u-boot-2013.10 master)
+
+---------
 
 Supports the following Kirkwood devices:
  
