@@ -1,4 +1,7 @@
 /*
+ * Copyright (C) 2014 bodhi <mibodhi@gmail.com>
+ *
+ * Base on:
  * Copyright (C) 2012
  * David Purdy <david.c.purdy@gmail.com>
  *
@@ -15,6 +18,7 @@
 #include <asm/arch/cpu.h>
 #include <asm/arch/soc.h>
 #include <asm/arch/mpp.h>
+#include <asm/io.h>
 #include "pogo_e02.h"
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -102,3 +106,33 @@ void reset_phy(void)
 	debug("88E1116 Initialized on %s\n", name);
 }
 #endif /* CONFIG_RESET_PHY_R */
+
+#define GREEN_LED	(1 << 16)
+#define ORANGE_LED	(1 << 17)
+#define BOTH_LEDS	(GREEN_LED | ORANGE_LED)
+#define NEITHER_LED	0
+
+static void set_leds(u32 leds, u32 blinking)
+{
+	struct kwgpio_registers *r = (struct kwgpio_registers *)MVEBU_GPIO1_BASE;
+	u32 oe = readl(&r->oe) | BOTH_LEDS;
+	writel(oe & ~leds, &r->oe);	/* active low */
+	u32 bl = readl(&r->blink_en) & ~BOTH_LEDS;
+	writel(bl | blinking, &r->blink_en);
+}
+
+void show_boot_progress(int val)
+{
+	switch (val) {
+	case BOOTSTAGE_ID_RUN_OS:		/* booting Linux */
+		set_leds(BOTH_LEDS, NEITHER_LED);
+		break;
+	case BOOTSTAGE_ID_NET_ETH_START:	/* Ethernet initialization */
+		set_leds(GREEN_LED, GREEN_LED);
+		break;
+	default:
+		if (val < 0)	/* error */
+			set_leds(ORANGE_LED, ORANGE_LED);
+		break;
+	}
+}

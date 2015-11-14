@@ -17,11 +17,11 @@ DECLARE_GLOBAL_DATA_PTR;
 #endif
 
 static char input_buffer[CONFIG_NETCONSOLE_BUFFER_SIZE];
-static int input_size; /* char count in input buffer */
-static int input_offset; /* offset to valid chars in input buffer */
+static int input_size = 0; /* char count in input buffer */
+static int input_offset = 0; /* offset to valid chars in input buffer */
 static int input_recursion;
 static int output_recursion;
-static int net_timeout;
+static int net_timeout = 50;
 static uchar nc_ether[6]; /* server enet address */
 static struct in_addr nc_ip; /* server ip */
 static short nc_out_port; /* target output port */

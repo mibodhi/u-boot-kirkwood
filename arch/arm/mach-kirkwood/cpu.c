@@ -183,6 +183,20 @@ int print_cpuinfo(void)
 {
 	char *rev = "??";
 	u16 devid = (readl(KW_REG_PCIE_DEVID) >> 16) & 0xffff;
+
+#ifndef CONFIG_KW88F6192
+	devid = (readl(KW_REG_PCIE_DEVID) >> 16) & 0xffff;
+#else
+	/* Temporary hack until we have a proper way to id the SoC
+	 * KW88F6192 and KW88F6702 is not correctly determined, so force correct SoC.
+	 * Note that this is just for displaying purpose during U-Boot initialization */
+	devid = 0x6192;
+#ifdef CONFIG_KW88F6702
+        devid = 0x6702;
+#endif
+
+#endif
+
 	u8 revid = readl(KW_REG_PCIE_REVID) & 0xff;
 
 	if ((readl(KW_REG_DEVICE_ID) & 0x03) > 2) {

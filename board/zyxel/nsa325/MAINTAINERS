@@ -1,0 +1,6 @@
+NSA325 BOARD
+M:	Jason Plum <jplum@archlinuxarm.org>
+S:	Maintained
+F:	board/zyxel/nsa325/
+F:	include/configs/nsa325.h
+F:	configs/nsa325_defconfig

@@ -46,6 +46,27 @@ config TARGET_GOFLEXHOME
 config TARGET_NAS220
 	bool "BlackArmor NAS220"
 
+config TARGET_GOFLEXNET
+        bool "GoFlex Net Board"
+
+config TARGET_POGO_V4
+        bool "Pogoplug V4 Board"
+
+config TARGET_NSA325
+        bool "Zyxel NSA325 Board"
+
+config TARGET_NSA310S
+        bool "Zyxel NSA310S NSA320S Board"
+
+config TARGET_NSA320
+        bool "Zyxel NSA320 Board"
+
+config TARGET_NSA310
+        bool "Zyxel NSA310 Board"
+
+config TARGET_NETGEAR_MS2110
+        bool "Netgear MS2110  Board"
+
 endchoice
 
 config SYS_SOC
@@ -65,5 +86,12 @@ source "board/raidsonic/ib62x0/Kconfig"
 source "board/Seagate/dockstar/Kconfig"
 source "board/Seagate/goflexhome/Kconfig"
 source "board/Seagate/nas220/Kconfig"
+source "board/Seagate/goflexnet/Kconfig"
+source "board/cloudengines/pogo_v4/Kconfig"
+source "board/zyxel/nsa325/Kconfig"
+source "board/zyxel/nsa310s/Kconfig"
+source "board/zyxel/nsa320/Kconfig"
+source "board/zyxel/nsa310/Kconfig"
+source "board/Marvell/netgear_ms2110/Kconfig"
 
 endif

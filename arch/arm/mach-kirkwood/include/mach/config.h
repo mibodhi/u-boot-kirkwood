@@ -81,6 +81,7 @@
  */
 #ifdef CONFIG_CMD_NET
 #define CONFIG_CMD_MII
+#define CONFIG_FEATURE_COMMAND_EDITING
 #define CONFIG_NETCONSOLE	/* include NetConsole support   */
 #define CONFIG_MII		/* expose smi ove miiphy interface */
 #define CONFIG_MVGBE		/* Enable Marvell Gbe Controller Driver */
@@ -116,6 +117,7 @@
 #define CONFIG_SYS_ATA_STRIDE		4
 /* Controller supports 48-bits LBA addressing */
 #define CONFIG_LBA48
+#define CONFIG_SYS_64BIT_LBA
 /* CONFIG_CMD_IDE requires some #defines for ATA registers */
 #define CONFIG_SYS_IDE_MAXBUS		2
 #define CONFIG_SYS_IDE_MAXDEVICE	2
@@ -134,5 +136,17 @@
 #define CONFIG_SYS_I2C_SLAVE		0x0
 #define CONFIG_SYS_I2C_SPEED		100000
 #endif
+
+/*
+ * Boot option
+ */
+#define CONFIG_CMD_BOOTZ
+
+/*
+ * GPIO
+ */
+#define CONFIG_CMD_GPIO
+#define CONFIG_KIRKWOOD_GPIO
+
 
 #endif /* _KW_CONFIG_H */

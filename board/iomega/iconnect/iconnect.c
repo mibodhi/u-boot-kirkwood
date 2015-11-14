@@ -11,6 +11,7 @@
 #include <asm/arch/cpu.h>
 #include <asm/arch/soc.h>
 #include <asm/arch/mpp.h>
+#include <asm/io.h>
 #include "iconnect.h"
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -90,4 +91,34 @@ int board_init(void)
 	gd->bd->bi_boot_params = mvebu_sdram_bar(0) + 0x100;
 
 	return 0;
+}
+
+#define BLUE_LED	(1 << 10)	/* BLUE 42 */
+#define RED_LED		(1 << 11)	/* RED  43 */
+#define BOTH_LEDS	(BLUE_LED | RED_LED)
+#define NEITHER_LED	0
+
+static void set_leds(u32 leds, u32 blinking)
+{
+	struct kwgpio_registers *r = (struct kwgpio_registers *)MVEBU_GPIO1_BASE;
+	u32 oe = readl(&r->oe) | BOTH_LEDS;
+	writel(oe & ~leds, &r->oe);	/* active low */
+	u32 bl = readl(&r->blink_en) & ~BOTH_LEDS;
+	writel(bl | blinking, &r->blink_en);
+}
+
+void show_boot_progress(int val)
+{
+	switch (val) {
+	case BOOTSTAGE_ID_RUN_OS:		/* booting Linux */
+		set_leds(BOTH_LEDS, NEITHER_LED);
+		break;
+	case BOOTSTAGE_ID_NET_ETH_START:	/* Ethernet initialization */
+		set_leds(BLUE_LED, BLUE_LED);
+		break;
+	default:
+		if (val < 0)	/* error */
+			set_leds(RED_LED, RED_LED);
+		break;
+	}
 }
