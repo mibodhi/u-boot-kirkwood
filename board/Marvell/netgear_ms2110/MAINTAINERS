@@ -1,0 +1,6 @@
+NETGEAR_MS2110 BOARD
+M:	bodhi <mibodhi@gmail.com>
+S:	Maintained
+F:	board/Marvell/netgear_ms2110
+F:	include/configs/netgear_ms2110.h
+F:	configs/netgear_ms2110_defconfig

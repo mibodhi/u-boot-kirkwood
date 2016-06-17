@@ -1,6 +1,7 @@
-/*
- * (C) Copyright 2009-2014
- * Gerald Kerma <dreagle@doukki.net>
+/* Copyright (C) 2015-2016 bodhi <mibodhi@gmail.com>
+ *
+ * Based on
+ * (C) Copyright 2009
  * Marvell Semiconductor <www.marvell.com>
  * Written-by: Prafulla Wadaskar <prafulla@marvell.com>
  *
@@ -19,22 +20,32 @@
  * High Level Configuration Options (easy to change)
  */
 #define CONFIG_FEROCEON_88FR131	1	/* CPU Core subversion */
+#define CONFIG_KIRKWOOD		1	/* SOC Family Name */
+#define CONFIG_KW88F6281	1	/* SOC Name */
 #define CONFIG_MACH_SHEEVAPLUG	/* Machine type */
+#define CONFIG_SKIP_LOWLEVEL_INIT	/* disable board lowlevel_init */
 
 /*
  * Commands configuration
  */
+#define CONFIG_SYS_NO_FLASH		/* Declare no flash (NOR/SPI) */
+#define CONFIG_CMD_DHCP
+#define CONFIG_CMD_ENV
+#define CONFIG_CMD_MII
+#define CONFIG_CMD_NAND
+#define CONFIG_CMD_PING
+#define CONFIG_CMD_USB
+#define CONFIG_CMD_DATE
+#define CONFIG_SYS_LONGHELP
+#define CONFIG_PREBOOT
+#define CONFIG_SYS_HUSH_PARSER
+#define CONFIG_SYS_PROMPT_HUSH_PS2 "> "
 
 /*
- * Standard filesystems
- */
-#define CONFIG_SYS_MVFS
-
-/*
- * mv-plug-common.h should be defined after CMD configs since it used them
+ * mv-common.h should be defined after CMD configs since it used them
  * to enable certain macros
  */
-#include "mv-plug-common.h"
+#include "mv-common.h"
 
 /*
  *  Environment variables configurations
@@ -50,31 +61,48 @@
  * it has to be rounded to sector size
  */
 #define CONFIG_ENV_SIZE			0x20000	/* 128k */
-#define CONFIG_ENV_ADDR			0x80000
-#define CONFIG_ENV_OFFSET		0x80000	/* env starts here */
+#define CONFIG_ENV_ADDR			0xC0000
+#define CONFIG_ENV_OFFSET		0xC0000	/* env starts here */
 
 /*
  * Default environment variables
  */
-#define CONFIG_BOOTCOMMAND		"${x_bootcmd_kernel}; "	\
-	"setenv bootargs ${x_bootargs} ${x_bootargs_root}; "	\
-	"bootm 0x6400000;"
 
-#define CONFIG_MTDPARTS		\
-	"orion_nand:512K(uboot),"				\
-	"512K(env),4M(kernel),"					\
-	"-(rootfs)\0"
+#define CONFIG_BOOTCOMMAND \
+	"run bootcmd_uenv; run bootcmd_usb; reset"
 
-#define CONFIG_EXTRA_ENV_SETTINGS	"x_bootargs=console"	\
-	"=ttyS0,115200 mtdparts="CONFIG_MTDPARTS	\
-	"x_bootcmd_kernel=nand read 0x6400000 0x100000 0x400000\0" \
-	"x_bootcmd_usb=usb start\0" \
-	"x_bootargs_root=root=/dev/mtdblock3 rw rootfstype=jffs2\0"
-
-#define MTDIDS_DEFAULT	"nand0=orion_nand"
-
-#define MTDPARTS_DEFAULT	\
-	"mtdparts="CONFIG_MTDPARTS
+#define CONFIG_EXTRA_ENV_SETTINGS \
+	"arcNumber=2097\0" \
+	"ethaddr=b6:d0:5e:0f:a1:17\0" \
+	"mtdparts=mtdparts=orion_nand:1M(u-boot),4M(uImage),32M(rootfs),-(data)\0"\
+	"baudrate=115200\0"\
+	"bootcmd_usb=run usb_init; run set_bootargs_usb; run usb_boot;\0"\
+	"bootdelay=10\0"\
+	"console=ttyS0,115200\0"\
+	"device=0:1\0"\
+	"ethact=egiga0\0"\
+	"led_error=orange blinking\0"\
+	"led_exit=green off\0"\
+	"led_init=green blinking\0"\
+	"mainlineLinux=yes\0"\
+	"mtdids=nand0=orion_nand\0"\
+	"partition=nand0,2\0"\
+	"rootdelay=10\0"\
+	"rootfstype=ext2\0"\
+	"set_bootargs_usb=setenv bootargs console=$console root=$usb_root rootdelay=$rootdelay rootfstype=$rootfstype $mtdparts\0"\
+	"stderr=serial\0"\
+	"stdin=serial\0"\
+	"stdout=serial\0"\
+	"usb_boot=mw 0x800000 0 1; run usb_load_uimage; if run usb_load_uinitrd; then bootm 0x800000 0x1100000; else bootm 0x800000; fi\0"\
+	"usb_init=usb start\0"\
+	"usb_load_uimage=ext2load usb $device 0x800000 /boot/uImage\0"\
+	"usb_load_uinitrd=ext2load usb $device 0x1100000 /boot/uInitrd\0"\
+	"usb_root=/dev/sda1\0" \
+	"bootcmd_uenv=run uenv_load; if test $uenv_loaded -eq 1; then run uenv_import; fi\0" \
+	"uenv_import=echo importing envs ...; env import -t 0x810000\0" \
+	"uenv_load=usb start; setenv uenv_loaded 0; for devtype in usb; do for disknum in 0; do run uenv_read_disk; done; done\0" \
+	"uenv_read=echo loading envs from $devtype $disknum ...; if load $devtype $disknum:1 0x810000 /boot/uEnv.txt; then setenv uenv_loaded 1; fi\0" \
+	"uenv_read_disk=if $devtype part $disknum; then run uenv_read; fi"
 
 /*
  * Ethernet Driver configuration
@@ -85,26 +113,40 @@
 #endif /* CONFIG_CMD_NET */
 
 /*
- * SDIO/MMC Card Configuration
+ * File system
  */
-#ifdef CONFIG_CMD_MMC
-#define CONFIG_MMC
-#define CONFIG_GENERIC_MMC
-#define CONFIG_MVEBU_MMC
-#define CONFIG_SYS_MMC_BASE KW_SDIO_BASE
-#endif /* CONFIG_CMD_MMC */
+#define CONFIG_CMD_EXT2
+#define CONFIG_CMD_EXT4
+#define CONFIG_CMD_FAT
+#define CONFIG_CMD_JFFS2
+#define CONFIG_JFFS2_NAND
+#define CONFIG_JFFS2_LZO
+#define CONFIG_CMD_UBI
+#define CONFIG_CMD_UBIFS
+#define CONFIG_RBTREE
+#define CONFIG_MTD_DEVICE               /* needed for mtdparts commands */
+#define CONFIG_MTD_PARTITIONS
+#define CONFIG_CMD_MTDPARTS
+#define CONFIG_LZO
 
-/*
- * SATA driver configuration
- */
-#ifdef CONFIG_CMD_IDE
-#define __io
-#define CONFIG_IDE_PREINIT
-#define CONFIG_DOS_PARTITION
-#define CONFIG_MVSATA_IDE_USE_PORT0
-#define CONFIG_MVSATA_IDE_USE_PORT1
+#ifdef CONFIG_MVSATA_IDE
 #define CONFIG_SYS_ATA_IDE0_OFFSET	MV_SATA_PORT0_OFFSET
 #define CONFIG_SYS_ATA_IDE1_OFFSET	MV_SATA_PORT1_OFFSET
-#endif /* CONFIG_CMD_IDE */
+#endif
+
+/*
+ * EFI partition
+ */
+#define CONFIG_EFI_PARTITION
+
+/*
+ *  Date Time
+ *   */
+#ifdef CONFIG_CMD_DATE
+#define CONFIG_RTC_MV
+#define CONFIG_CMD_SNTP
+#define CONFIG_CMD_DNS
+#endif /* CONFIG_CMD_DATE */
+
 
 #endif /* _CONFIG_SHEEVAPLUG_H */

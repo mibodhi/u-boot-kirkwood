@@ -1,0 +1,6 @@
+GOFLEXNET BOARD
+M:	bodhi <mibodhi@gmail.com>
+S:	Maintained
+F:	board/Seagate/goflexnet/
+F:	include/configs/goflexnet.h
+F:	configs/goflexnet_defconfig

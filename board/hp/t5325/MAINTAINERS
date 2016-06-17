@@ -1,0 +1,6 @@
+T5325 BOARD
+M:	bodhi <mibodhi@gmail.com>
+S:	Maintained
+F:	board/hp/t5325/
+F:	include/configs/t5325.h
+F:	configs/t5325_defconfig

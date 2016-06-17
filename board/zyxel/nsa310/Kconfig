@@ -1,0 +1,12 @@
+if TARGET_NSA310
+
+config SYS_BOARD
+	default "nsa310"
+
+config SYS_VENDOR
+	default "zyxel"
+
+config SYS_CONFIG_NAME
+	default "nsa310"
+
+endif

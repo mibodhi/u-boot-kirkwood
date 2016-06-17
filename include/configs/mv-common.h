@@ -146,6 +146,28 @@
 #define CONFIG_MTD_PARTITIONS
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_LZO
+#define CONFIG_CMD_FS_GENERIC
 #endif
+
+/*
+ * Kirkwood MMC
+ */
+#if defined(CONFIG_KIRKWOOD) && defined(CONFIG_CMD_MMC)
+#define CONFIG_MMC
+#define CONFIG_GENERIC_MMC 
+#define CONFIG_KIRKWOOD_MMC
+#define CONFIG_SYS_MMC_BASE KW_SDIO_BASE
+#endif /* defined(CONFIG_KIRKWOOD) && defined(CONFIG_MMC) */
+
+/*
+ * GPIO command for all Kirkwood boxes
+ */
+#define CONFIG_CMD_GPIO
+
+/*
+ * Serial -- temporarily included here
+ */
+
+#define CONFIG_SYS_NS16550
 
 #endif /* _MV_COMMON_H */
