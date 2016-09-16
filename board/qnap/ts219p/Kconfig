@@ -1,0 +1,12 @@
+if TARGET_TS219P
+
+config SYS_BOARD
+	default "ts219p"
+
+config SYS_VENDOR
+	default "qnap"
+
+config SYS_CONFIG_NAME
+	default "ts219p"
+
+endif

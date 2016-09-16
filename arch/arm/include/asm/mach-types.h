@@ -361,6 +361,7 @@ extern unsigned int __machine_arch_type;
 #define MACH_TYPE_RD78X00_MASA         2135
 #define MACH_TYPE_DM355_LEOPARD        2138
 #define MACH_TYPE_TS219                2139
+#define MACH_TYPE_TS219P               2139
 #define MACH_TYPE_PCA100               2149
 #define MACH_TYPE_DAVINCI_DA850_EVM    2157
 #define MACH_TYPE_AT91SAM9G10EK        2159
@@ -14239,6 +14240,18 @@ extern unsigned int __machine_arch_type;
 # define machine_is_nsa310s()  (machine_arch_type == MACH_TYPE_NSA310S)
 #else
 # define machine_is_nsa310s()  (0)
+#endif
+
+#ifdef CONFIG_MACH_TS219P
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type	__machine_arch_type
+# else
+#  define machine_arch_type	MACH_TYPE_TS219P
+# endif
+# define machine_is_ts219p()	(machine_arch_type == MACH_TYPE_TS219P)
+#else
+# define machine_is_ts219p()	(0)
 #endif
 
 /*
