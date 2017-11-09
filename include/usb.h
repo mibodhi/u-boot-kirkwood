@@ -141,6 +141,7 @@ struct usb_device {
 	int act_len;			/* transferred bytes */
 	int maxchild;			/* Number of ports if hub */
 	int portnr;			/* Port number, 1=first */
+        int extra_timout;		/* add to timeout in ehci_submit_async */
 #ifndef CONFIG_DM_USB
 	/* parent hub, or NULL if this is the root hub */
 	struct usb_device *parent;

@@ -1,0 +1,81 @@
+Current version branch 2017.07-kirkwood-tld-1
+
+Supports the following Kirkwood devices:
+ 
+GoFlexNet, GoFlexHome, PogoE02, Dockstar, iConnect, NetgearStora, PogoV4/Mobile, Sheevaplug, NSA325, NSA320, NSA310S/320S, NSA310, HP T5325, Dreamplug.
+
+For u-boot images:
+
+http://forum.doozan.com/read.php?3,12381
+
+==============================================
+
+Change log (chronological order):
+
+--------
+
+Removed EXTRAVERSION from IDENT string in Kirkwood headers
+Added Netgear Stora
+
+--------
+
+Add new U-Boot env: usb_ready_retry
+
+This env allows users to select how long U-Boot will retry in testing the USB drive readiness.
+To enable the feature, set this env either in Linux or U-Boot. 
+The period could be any unsigned integer, so increase the period as needed to a 
+number where you are comfortable that the USB drive is working, and add a few seconds to be sure.
+
+--------
+
+Forwarding to 2014.01 U-Boot
+Merge branch '2013.10-kirkwood' into 2014.01-kirkwood
+
+--------
+
+Forwarding to 2014.07 U-Boot
+Merge branch '2014.01-kirkwood' into 2014.07-kirkwood
+New tag v2014.07-kirkwood.
+
+Completed pogo_v4, now supports USB, MMC, SATA
+Add LED boot sequences for boxes that did not have this code
+Add various features missing in some boxes
+Add bootz
+
+--------
+
+Added NSA325 and NSA320 u-boots (modified and manually patched with u-boot code from https://github.com/WarheadsSE/u-boot-kirkwood)
+Add uEnv.txt loading capability (u-boot command load)
+Modified jffs2 file load and list command names due to name conflicts (fsls,  fsload)
+Add new default envs in all supported u-boot to load uEnv.txt and also default booting to USB
+Various editorial changes 
+
+
+-----------
+
+Added  NSA310S and NSA310 u-boots
+Modified NSA3xx u-boots to activate the Ethernet PHY
+
+-----------
+
+Forwarding to 2015.10 U-Boot
+
+-----------
+version 2015.10-kirkwood-tld-2
+
+Added HP Thin Client T5325 u-boot
+Added buttons capability to all boxes that have buttons
+Activated 2nd SATA for NSA310S/320S u-boot
+Activated SATA and other functionalities for Sheevaplug u-boot
+
+-----------
+version 2016.05-kirkwood-tld-1
+
+Rebase to 2016.05 mainline
+
+-----------
+version 2017.07-kirkwood-tld-1
+
+- Rebase to 2017.07 mainline
+- Incorporated patch to fix "EHCI timed out on TD" error with USB drives. 
+

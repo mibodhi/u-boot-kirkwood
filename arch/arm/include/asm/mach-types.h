@@ -5058,3 +5058,52 @@
 #define MACH_TYPE_TOMATO               5113
 #define MACH_TYPE_OMAP3_MRC3D          5114
 #endif
+
+#ifdef CONFIG_MACH_NSA310
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type	__machine_arch_type
+# else
+#  define machine_arch_type	MACH_TYPE_NSA310
+# endif
+# define machine_is_nsa310()	(machine_arch_type == MACH_TYPE_NSA310)
+#else
+# define machine_is_nsa310()	(0)
+#endif
+
+#ifdef CONFIG_MACH_NSA320
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type	__machine_arch_type
+# else
+#  define machine_arch_type	MACH_TYPE_NSA320
+# endif
+# define machine_is_nsa320()	(machine_arch_type == MACH_TYPE_NSA320)
+#else
+# define machine_is_nsa320()	(0)
+#endif
+
+#ifdef CONFIG_MACH_NSA325
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type	__machine_arch_type
+# else
+#  define machine_arch_type	MACH_TYPE_NSA325
+# endif
+# define machine_is_nsa325()	(machine_arch_type == MACH_TYPE_NSA325)
+#else
+# define machine_is_nsa325()	(0)
+#endif
+
+#ifdef CONFIG_MACH_NSA310S
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type     __machine_arch_type
+# else
+#  define machine_arch_type     MACH_TYPE_NSA310S
+# endif
+# define machine_is_nsa310s()  (machine_arch_type == MACH_TYPE_NSA310S)
+#else
+# define machine_is_nsa310s()  (0)
+#endif
+

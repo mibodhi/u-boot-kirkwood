@@ -1,0 +1,12 @@
+if TARGET_GOFLEXNET
+
+config SYS_BOARD
+	default "goflexnet"
+
+config SYS_VENDOR
+	default "Seagate"
+
+config SYS_CONFIG_NAME
+	default "goflexnet"
+
+endif

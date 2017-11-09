@@ -1,0 +1,6 @@
+NSA320 BOARD
+M:	Jason Plum <jplum@archlinuxarm.org>
+S:	Maintained
+F:	board/zyxel/nsa320/
+F:	include/configs/nsa320.h
+F:	configs/nsa320_defconfig

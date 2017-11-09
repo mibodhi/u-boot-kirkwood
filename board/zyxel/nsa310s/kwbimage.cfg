@@ -1,7 +1,5 @@
 #
-# Copyright (C) 2015
-# Gerald Kerma <dreagle@doukki.net>
-# Tony Dinh <mibodhi@gmail.com>
+# Copyright (C) 2016	bodhi <mibodhi@gmail.com>
 #
 # SPDX-License-Identifier:	GPL-2.0+
 #

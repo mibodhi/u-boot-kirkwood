@@ -313,7 +313,9 @@ ehci_submit_async(struct usb_device *dev, unsigned long pipe, void *buffer,
 	int timeout;
 	int ret = 0;
 	struct ehci_ctrl *ctrl = ehci_get_ctrl(dev);
+	int trynum;
 
+	debug("\n***** ehci_submit_async ****\n");
 	debug("dev=%p, pipe=%lx, buffer=%p, length=%d, req=%p\n", dev, pipe,
 	      buffer, length, req);
 	if (req != NULL)
@@ -552,6 +554,15 @@ ehci_submit_async(struct usb_device *dev, unsigned long pipe, void *buffer,
 	ehci_writel(&ctrl->hcor->or_usbsts, (usbsts & 0x3f));
 
 	/* Enable async. schedule. */
+	trynum = 1;	/* No more than 2 tries, in case of XACTERR. */
+	/* When the 1st try gets xacterr,
+	 * 2nd try gets xacterr and often babble and/or halted.
+	 * 3rd try times out.
+	 * After the 2nd try, the disk has recovered, so we need to clear and
+	 * reset the USB port, then return fail so the upper layer can retry.
+	 */
+   retry_xacterr:;	
+	vtd = &qtd[qtd_counter - 1];
 	cmd = ehci_readl(&ctrl->hcor->or_usbcmd);
 	cmd |= CMD_ASE;
 	ehci_writel(&ctrl->hcor->or_usbcmd, cmd);
@@ -565,8 +576,8 @@ ehci_submit_async(struct usb_device *dev, unsigned long pipe, void *buffer,
 
 	/* Wait for TDs to be processed. */
 	ts = get_timer(0);
-	vtd = &qtd[qtd_counter - 1];
 	timeout = USB_TIMEOUT_MS(pipe);
+	timeout += dev->extra_timout;
 	do {
 		/* Invalidate dcache */
 		invalidate_dcache_range((unsigned long)&ctrl->qh_list,
@@ -581,7 +592,8 @@ ehci_submit_async(struct usb_device *dev, unsigned long pipe, void *buffer,
 			break;
 		WATCHDOG_RESET();
 	} while (get_timer(ts) < timeout);
-
+	debug("took %4lu ms of %4d\n", get_timer(ts), timeout);
+	
 	/*
 	 * Invalidate the memory area occupied by buffer
 	 * Don't try to fix the buffer alignment, if it isn't properly
@@ -613,6 +625,20 @@ ehci_submit_async(struct usb_device *dev, unsigned long pipe, void *buffer,
 	token = hc32_to_cpu(qh->qh_overlay.qt_token);
 	if (!(QT_TOKEN_GET_STATUS(token) & QT_TOKEN_STATUS_ACTIVE)) {
 		debug("TOKEN=%#x\n", token);
+		if (token & QT_TOKEN_STATUS_XACTERR) {
+	   	   if (--trynum >= 0) {	/* It is necessary to do this, otherwise the disk is clagged. */
+	   	      debug("reset the TD and redo, because of XACTERR\n");
+	   	      token &= ~QT_TOKEN_STATUS_HALTED;
+	   	      token |= QT_TOKEN_STATUS_ACTIVE | QT_TOKEN_CERR(2);
+	   	      vtd->qt_token = cpu_to_hc32(token);
+	   	      qh->qh_overlay.qt_token = cpu_to_hc32(token);
+	   	      goto retry_xacterr;
+	   	   }
+	   	   dev->status = USB_ST_XACTERR;
+		   dev->act_len = length - QT_TOKEN_GET_TOTALBYTES(token);
+		   goto fail;
+		}
+
 		switch (QT_TOKEN_GET_STATUS(token) &
 			~(QT_TOKEN_STATUS_SPLITXSTATE | QT_TOKEN_STATUS_PERR)) {
 		case 0:

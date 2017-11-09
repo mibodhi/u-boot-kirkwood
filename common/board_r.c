@@ -629,12 +629,10 @@ static int initr_pcmcia(void)
 #if defined(CONFIG_IDE)
 static int initr_ide(void)
 {
-	puts("IDE:   ");
 #if defined(CONFIG_START_IDE)
+	puts("IDE:   ");
 	if (board_start_ide())
 		ide_init();
-#else
-	ide_init();
 #endif
 	return 0;
 }

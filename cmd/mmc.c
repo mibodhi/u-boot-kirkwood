@@ -362,6 +362,9 @@ static int do_mmc_rescan(cmd_tbl_t *cmdtp, int flag,
 	if (!mmc)
 		return CMD_RET_FAILURE;
 
+        printf("\nMMC rescan: current device # %d initialized OK\n",
+               curr_device);
+
 	return CMD_RET_SUCCESS;
 }
 static int do_mmc_part(cmd_tbl_t *cmdtp, int flag,

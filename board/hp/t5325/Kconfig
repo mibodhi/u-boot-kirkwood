@@ -1,0 +1,16 @@
+# 
+# (C) Copyright 2016 bodhi <mibodhi@gmail.com>
+#
+#
+if TARGET_T5325
+
+config SYS_BOARD
+	default "t5325"
+
+config SYS_VENDOR
+	default "hp"
+
+config SYS_CONFIG_NAME
+	default "t5325"
+
+endif

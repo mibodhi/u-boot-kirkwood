@@ -1,4 +1,7 @@
 /*
+ * Copyright (C) 2017 bodhi <mibodhi@gmail.com>
+ *
+ * Based on:
  * (C) Copyright 2011
  * Jason Cooper <u-boot@lakedaemon.net>
  *
@@ -12,10 +15,19 @@
 #ifndef __DREAMPLUG_H
 #define __DREAMPLUG_H
 
+#define BLUETOOTH_BLUE_LED		(1 << 15)
+#define WIFI_GREEN_LED			(1 << 16)
+#define WIFIAP_GREEN_LED		(1 << 17)
+
 #define DREAMPLUG_OE_LOW	(~(0))
-#define DREAMPLUG_OE_HIGH	(~(0))
 #define DREAMPLUG_OE_VAL_LOW	0
-#define DREAMPLUG_OE_VAL_HIGH	(0xf << 16) /* 4 LED Pins high */
+
+/* #define DREAMPLUG_OE_HIGH	(~(0)) */
+/* #define DREAMPLUG_OE_VAL_HIGH	(0xf << 16)  /4 LED Pins high */
+
+#define DREAMPLUG_OE_HIGH	((BLUETOOTH_BLUE_LED | WIFI_GREEN_LED | WIFIAP_GREEN_LED)) 
+#define DREAMPLUG_OE_VAL_HIGH	(~(BLUETOOTH_BLUE_LED | WIFI_GREEN_LED | WIFIAP_GREEN_LED))
+
 
 /* PHY related */
 #define MV88E1116_MAC_CTRL2_REG		21

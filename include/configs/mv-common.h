@@ -134,6 +134,12 @@
 #define CONFIG_MTD_PARTITIONS
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_LZO
+#define CONFIG_CMD_FS_GENERIC
 #endif
+
+/*
+ * GPIO command for all Kirkwood boxes
+ */
+#define CONFIG_CMD_GPIO
 
 #endif /* _MV_COMMON_H */

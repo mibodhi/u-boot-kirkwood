@@ -238,6 +238,7 @@ int bootm_find_images(int flag, int argc, char * const argv[])
 
 #if IMAGE_ENABLE_OF_LIBFDT
 	/* find flattened device tree */
+
 	ret = boot_get_fdt(flag, argc, argv, IH_ARCH_DEFAULT, &images,
 			   &images.ft_addr, &images.ft_len);
 	if (ret) {
@@ -259,6 +260,7 @@ int bootm_find_images(int flag, int argc, char * const argv[])
 #endif
 
 	/* find all of the loadables */
+
 	ret = boot_get_loadable(argc, argv, &images, IH_ARCH_DEFAULT,
 			       NULL, NULL);
 	if (ret) {
@@ -494,6 +496,12 @@ ulong bootm_disable_interrupts(void)
 	iflag = disable_interrupts();
 #ifdef CONFIG_NETCONSOLE
 	/* Stop the ethernet stack if NetConsole could have left it up */
+	/* and make sure that the starting kernel message printed out first */
+        char *s;
+        s = getenv ("stdout");
+        if (strcmp(s, "nc") == 0) {
+               printf("\n\nStarting kernel ...\n");
+        }
 	eth_halt();
 # ifndef CONFIG_DM_ETH
 	eth_unregister(eth_get_dev());
