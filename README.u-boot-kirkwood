@@ -78,4 +78,4 @@ version 2017.07-kirkwood-tld-1
 
 - Rebase to 2017.07 mainline
 - Incorporated patch to fix "EHCI timed out on TD" error with USB drives. 
-
+- Switched to use mainline MMC driver for Pogo V4/Mobile and Sheevaplug boxes
