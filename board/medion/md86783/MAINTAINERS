@@ -1,0 +1,6 @@
+MD86783 BOARD
+M:	Damien Merenne <dmerenne@gmail.com>
+S:	Maintained
+F:	board/medion/md86783/
+F:	include/configs/md86783.h
+F:	configs/md86783_defconfig
