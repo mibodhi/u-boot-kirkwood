@@ -73,6 +73,10 @@ int board_early_init_f(void)
 		MPP11_UART0_RXD,	/* UART0_RX */
 		MPP12_GPO,
 		MPP13_GPIO,			/* pmx-button-reset */
+		MPP14_GPIO,
+		MPP15_GPIO,
+		MPP16_GPIO,
+		MPP17_GPIO,
 		MPP18_NF_IO0,		/* nand */
 		MPP19_NF_IO1,		/* nand */
 		MPP20_GPIO,			/* pmx-sata1 */
@@ -81,18 +85,18 @@ int board_early_init_f(void)
 		MPP23_GPIO,			/* pmx-sata0 ; pmx-led-blue-disk1 */
 		MPP24_GPIO,
 		MPP25_GPIO,
-		MPP26_GPIO,
+		MPP26_GPIO,			/* HDD-0 Power */
 		MPP27_GPIO,
-		MPP28_GPIO,
+		MPP28_GPIO,			/* HDD-1 Power */
 		MPP29_GPIO,			/* pmx-led-blue-backup */
 		MPP30_GPIO,			/* pmx-poweroff */
 		MPP31_GPIO,			/* pmx-led-blue-power */
 		MPP32_GPIO,
 		MPP33_GPIO,
 		MPP34_GPIO,
-		MPP35_GPIO,
-		MPP36_GPIO,			/* pmx-twsi1 */
-		MPP37_GPIO,			/* pmx-twsi1 */
+		MPP35_GPIO,			/* USB 2.0 power */
+		MPP36_GPIO,
+		MPP37_GPIO,
 		MPP38_GPIO,			/* pmx-led-blue-activity */
 		MPP39_GPIO,
 		MPP40_GPIO,
@@ -101,7 +105,7 @@ int board_early_init_f(void)
 		MPP43_GPIO,
 		MPP44_GPIO,
 		MPP45_GPIO,			/* pmx-button-backup  */
-		MPP46_GPIO,
+		MPP46_GPIO,			/* USB 3.0 Power */
 		MPP47_GPIO,			/* pmx-button-power   */
 		MPP48_GPIO,
 		MPP49_GPIO,
@@ -113,6 +117,9 @@ int board_early_init_f(void)
 
 int board_init(void)
 {
+	char **val1, **val2; // variables for getting the 'yes' or 'no' switch from some environment variables
+	val1="";
+	val2="";
 	/*
 	 * arch number of board
 	 */
@@ -123,16 +130,20 @@ int board_init(void)
 
     kw_gpio_set_valid(22, 1); /* pmx-led-blue-disk2 */
     kw_gpio_set_valid(23, 1); /* pmx-led-blue-disk1 */
+    kw_gpio_set_valid(26, 1); /* HDD0 Power */
+    kw_gpio_set_valid(28, 1); /* HDD1 power */
     kw_gpio_set_valid(29, 1); /* pmx-led-blue-backup */
     kw_gpio_set_valid(31, 1); /* pmx-led-blue-power */
+    kw_gpio_set_valid(35, 1); /* USB 2.0 Power */
     kw_gpio_set_valid(38, 1); /* pmx-led-blue-activity */
+    kw_gpio_set_valid(46, 1); /* USB 3.0 Power */
 
     // Enable power LED
     kw_gpio_direction_output(31, 0);
 	kw_gpio_set_value(31, 0);
 
 	// initialize the cooling fan
-	unsigned char byte=0x40;
+	unsigned char byte=0x40; // the higher the hex value, the faster the fan
 	int fi;
 	// try fan init 10 times, due to unreliable i2c access
 	for (fi = 0; fi < 10; fi++)
@@ -155,6 +166,28 @@ int board_init(void)
 			break;
 		}
 	}
+
+	// Enabling USB 2.0 Power
+	puts ("Enabled USB 2.0 Power.\n");
+	kw_gpio_direction_output(35, 0);
+	kw_gpio_set_value(35, 1);
+	val1="";
+
+	// Enabling USB 3.0 Power
+	puts ("Enabled USB 3.0 Power.\n");
+	kw_gpio_direction_output(46, 0);
+	kw_gpio_set_value(46, 1);
+
+	puts ("Running HDD staggered spin-up...\n"); // be a little easier on the power supply
+	puts ("Enabling HDD-0 Power in 1s.\n");
+	udelay(1000000);
+	kw_gpio_direction_output(26, 0);
+	kw_gpio_set_value(26, 1);
+	puts ("Enabling HDD-1 Power in 3s.\n");
+	udelay(3000000);
+	kw_gpio_direction_output(28, 0);
+	kw_gpio_set_value(28, 1);
+
 	return 0;
 }
 
@@ -184,8 +217,9 @@ void reset_phy(void)
 	miiphy_write(name, devadr, MV88E1318_MAC_CTRL_REG, reg);
 	miiphy_write(name, devadr, MV88E1318_PGADR_REG, 0);
 
+	// commented out PHY reset, as it always failed, anyway (worked around via mii tool call in 'preboot' variable)
 	/* reset the phy */
-	miiphy_reset(name, devadr);
+	//miiphy_reset(name, devadr);
 
 	/* The READYNAS DUO V2 uses the 88E1310S Alaska (interface identical to 88E1318) */
 	/* and has an MCU attached to the LED[2] via tristate interrupt */
