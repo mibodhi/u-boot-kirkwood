@@ -4874,6 +4874,7 @@
 #define MACH_TYPE_XARINA_ENTRY         4929
 #define MACH_TYPE_CONTI_MRNEVO         4930
 #define MACH_TYPE_NSA310S              4931
+#define MACH_TYPE_MD86783              4931
 #define MACH_TYPE_POWERECU             4932
 #define MACH_TYPE_Q7M120               4933
 #define MACH_TYPE_H6829                4934
@@ -5107,3 +5108,14 @@
 # define machine_is_nsa310s()  (0)
 #endif
 
+#ifdef CONFIG_MACH_MD86783
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type     __machine_arch_type
+# else
+#  define machine_arch_type     MACH_TYPE_MD86783
+# endif
+# define machine_is_md86783()  (machine_arch_type == MACH_TYPE_MD86783)
+#else
+# define machine_is_md86783()  (0)
+#endif

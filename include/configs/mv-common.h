@@ -51,8 +51,9 @@
  * The following definitions let you select what serial you want to use
  * for your console driver.
  */
-
+#if !defined(CONFIG_CONS_INDEX)
 #define CONFIG_CONS_INDEX	1	/*Console on UART0 */
+#endif
 #define CONFIG_SYS_BAUDRATE_TABLE	{ 9600, 19200, 38400, 57600, \
 					  115200,230400, 460800, 921600 }
 /* auto boot */
