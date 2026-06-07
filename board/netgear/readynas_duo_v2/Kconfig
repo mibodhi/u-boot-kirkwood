@@ -1,0 +1,12 @@
+if TARGET_READYNAS_DUO_V2
+
+config SYS_BOARD
+	default "readynas_duo_v2"
+
+config SYS_VENDOR
+	default "netgear"
+
+config SYS_CONFIG_NAME
+	default "readynas_duo_v2"
+
+endif

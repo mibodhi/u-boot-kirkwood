@@ -68,6 +68,9 @@ config TARGET_POGO_V4
 config TARGET_NSA325
         bool "Zyxel NSA325 Board"
 
+config TARGET_READYNAS_DUO_V2
+        bool "NETGEAR READYNAS DUO V2"
+
 config TARGET_NSA310S
         bool "Zyxel NSA310S NSA320S Board"
 
@@ -108,6 +111,7 @@ source "board/zyxel/nsa310s/Kconfig"
 source "board/Seagate/goflexnet/Kconfig"
 source "board/cloudengines/pogo_v4/Kconfig"
 source "board/zyxel/nsa325/Kconfig"
+source "board/netgear/readynas_duo_v2/Kconfig"
 source "board/zyxel/nsa320/Kconfig"
 source "board/zyxel/nsa310/Kconfig"
 source "board/Marvell/netgear_ms2110/Kconfig"
